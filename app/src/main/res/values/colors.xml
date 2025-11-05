@@ -7,4 +7,19 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta Hirelance Dark Theme -->
+    <color name="black_carbon">#0E0E0E</color>
+    <color name="dark_gray">#1A1A1A</color>
+    <color name="medium_gray">#2C2C2C</color>
+    <color name="gray_light">#B3B3B3</color>
+    <color name="white_smoke">#EDEDED</color>
+    <color name="bright_orange">#FF6B00</color>
+    <color name="medium_orange">#FF7E29</color>
+    <color name="blue_grayish">#4C5CFF</color>
+    <color name="soft_purple">#6C63FF</color>
+
+    <!-- Selectors -->
+    <color name="radio_text_selected_dark">#FF6B00</color>
+    <color name="radio_text_normal_dark">#B3B3B3</color>
 </resources>
