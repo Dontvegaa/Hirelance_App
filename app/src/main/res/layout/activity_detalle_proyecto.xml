@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hl_fondo_principal"
+    tools:context=".controlador.DetalleProyectoActivity">
+
+    <!-- Barra de Título (Toolbar) con botón de regreso -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/hl_fondo_tarjeta"
+            app:titleTextColor="@color/hl_texto_principal"
+            app:navigationIcon="@drawable/ic_arrow_back" /> <!-- Necesitarás un ícono de flecha atrás -->
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Área de Contenido Deslizable -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnPostularse"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <!-- Contenedor del contenido -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Título del Proyecto -->
+            <TextView
+                android:id="@+id/textTituloDetalle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/hl_texto_principal"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Título Muy Largo del Proyecto de Desarrollo" />
+
+            <!-- Presupuesto -->
+            <TextView
+                android:id="@+id/textPresupuestoDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/hl_acento_naranja"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textTituloDetalle"
+                tools:text="$1,200.00" />
+
+            <!-- Separador -->
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/hl_borde"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textPresupuestoDetalle" />
+
+            <!-- Detalles (Contratista, Categoría, Fecha) -->
+            <TextView
+                android:id="@+id/labelContratista"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Publicado por:"
+                android:textColor="@color/hl_texto_secundario"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+            <TextView
+                android:id="@+id/textContratistaDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/hl_texto_principal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelContratista"
+                tools:text="Empresa de Tecnología S.A." />
+
+            <TextView
+                android:id="@+id/labelCategoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Categoría:"
+                android:textColor="@color/hl_texto_secundario"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textContratistaDetalle" />
+
+            <TextView
+                android:id="@+id/textCategoriaDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tag_fondo_azul"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/hl_texto_principal"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelCategoria"
+                tools:text="Desarrollo Móvil" />
+
+            <TextView
+                android:id="@+id/labelFechaLimite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Fecha Límite:"
+                android:textColor="@color/hl_texto_secundario"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textCategoriaDetalle" />
+
+            <TextView
+                android:id="@+id/textFechaLimiteDetalle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/hl_texto_principal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelFechaLimite"
+                tools:text="30 de Diciembre, 2025" />
+
+            <!-- Separador -->
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/hl_borde"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textFechaLimiteDetalle" />
+
+            <!-- Descripción Completa -->
+            <TextView
+                android:id="@+id/labelDescripcion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Descripción del Proyecto"
+                android:textColor="@color/hl_texto_principal"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+            <TextView
+                android:id="@+id/textDescripcionCompleta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="Cargando descripción..."
+                android:textColor="@color/hl_texto_secundario"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelDescripcion"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Indicador de Carga -->
+    <ProgressBar
+        android:id="@+id/progressBarDetalle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/hl_acento_naranja"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        tools:visibility="visible" />
+
+    <!-- Botón de Postularse (anclado al fondo) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPostularse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/hl_acento_naranja"
+        android:paddingVertical="14dp"
+        android:text="Postularse Ahora"
+        android:textColor="@color/hl_texto_principal"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

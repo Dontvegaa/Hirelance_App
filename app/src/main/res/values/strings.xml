@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Hirelance</string>
+
+    <!-- Login y Registro -->
+    <string name="hint_correo">Correo Electrónico</string>
+    <string name="hint_contrasena">Contraseña</string>
+    <string name="boton_iniciar_sesion">Iniciar Sesión</string>
+    <string name="label_ir_a_registro">¿No tienes una cuenta? Regístrate aquí</string>
+    <string name="label_ir_a_login">¿Ya tienes una cuenta? Inicia sesión</string>
+    <string name="boton_registrarse">Registrarse</string>
+
+    <string name="hint_nombre">Nombre</string>
+    <string name="hint_apellido">Apellido</string>
+    <string name="hint_confirmar_contrasena">Confirmar Contraseña</string>
+    <string name="hint_dui">DUI (ej: 00000000-0)</string>
+    <string name="hint_telefono">Teléfono (ej: 7777-7777)</string>
+    <string name="label_tipo_usuario">Soy...</string>
+    <string name="radio_estudiante">Estudiante</string>
+    <string name="radio_contratista">Contratista</string>
+
+    <!-- Mensajes de Error y Éxito -->
+    <string name="error_campo_vacio">Este campo no puede estar vacío</string>
+    <string name="error_corre_invalido">Por favor, introduce un correo válido</string>
+    <string name="error_contrasenas_no_coinciden">Las contraseñas no coinciden</string>
+    <string name="error_red">Error de red. Revisa tu conexión.</string>
+    <string name="error_login_incorrecto">Error: Correo o contraseña incorrectos.</string>
+    <string name="exito_registro">¡Registro exitoso! Por favor, inicia sesión.</string>
+    <string name="bienvenida_usuario">¡Bienvenido, %1$s!</string>
+
 </resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hl_fondo_principal"
+    tools:context=".controlador.PostulacionActivity">
+
+    <!-- Toolbar con botón de regreso -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarPostulacion"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/hl_fondo_tarjeta"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Enviar Postulación"
+            app:titleTextColor="@color/hl_texto_principal" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnEnviarPostulacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Campo: Propuesta (Multilínea) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutInputPropuesta"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Propuesta (Detalla por qué eres el indicado)"
+                android:textColorHint="@color/hl_texto_secundario"
+                app:boxStrokeColor="@color/hl_acento_naranja"
+                app:hintTextColor="@color/hl_acento_naranja">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPropuesta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/hl_fondo_tarjeta"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="6"
+                    android:textColor="@color/hl_texto_principal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Campo: Monto Ofertado -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutInputMonto"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Tu Oferta (Ej: 300.00)"
+                android:textColorHint="@color/hl_texto_secundario"
+                app:boxStrokeColor="@color/hl_acento_naranja"
+                app:hintTextColor="@color/hl_acento_naranja"
+                app:prefixText="$"
+                app:prefixTextColor="@color/hl_texto_secundario">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editMonto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/hl_fondo_tarjeta"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/hl_texto_principal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Campo: Tiempo Estimado -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutInputTiempo"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Tiempo Estimado (Ej: 2 semanas)"
+                android:textColorHint="@color/hl_texto_secundario"
+                app:boxStrokeColor="@color/hl_acento_naranja"
+                app:hintTextColor="@color/hl_acento_naranja">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTiempo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/hl_fondo_tarjeta"
+                    android:inputType="text"
+                    android:textColor="@color/hl_texto_principal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Botón de Enviar (anclado al fondo) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEnviarPostulacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/hl_acento_naranja"
+        android:paddingVertical="14dp"
+        android:text="Enviar Postulación"
+        android:textColor="@color/hl_texto_principal"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Indicador de Carga -->
+    <ProgressBar
+        android:id="@+id/progressBarPostulacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/hl_acento_naranja"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

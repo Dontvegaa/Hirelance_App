@@ -1,4 +1,4 @@
-package sv.edu.itca.hirelance;
+package com.hirelance;
 
 import org.junit.Test;
 

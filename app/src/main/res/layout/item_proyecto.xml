@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Usamos MaterialCardView para un buen efecto de sombra y bordes redondeados -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="6dp"
+    app:cardBackgroundColor="@color/hl_fondo_tarjeta"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/hl_borde"
+    app:strokeWidth="1dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Título del Proyecto (del modelo Proyecto.java) -->
+        <TextView
+            android:id="@+id/textTituloProyecto"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/hl_texto_principal"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textPresupuesto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Desarrollo de App Móvil para Restaurante" />
+
+        <!-- Presupuesto (del modelo Proyecto.java) -->
+        <TextView
+            android:id="@+id/textPresupuesto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/hl_acento_naranja"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$500.00" />
+
+        <!-- Categoría (del objeto Categoria anidado en Proyecto) -->
+        <TextView
+            android:id="@+id/textCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/tag_fondo_azul"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textColor="@color/hl_texto_principal"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textTituloProyecto"
+            tools:text="Desarrollo Móvil" />
+
+        <!-- Nombre del Contratista (del objeto Usuario anidado en Proyecto) -->
+        <TextView
+            android:id="@+id/textContratista"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/hl_texto_secundario"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textCategoria"
+            tools:text="Publicado por: Empresa S.A. de C.V." />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

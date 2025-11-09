@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hl_fondo_principal"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="32dp"
+        tools:context=".controlador.RegisterActivity">
+
+        <TextView
+            android:id="@+id/textTituloRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="Crear Cuenta"
+            android:textColor="@color/hl_acento_naranja"
+            android:textSize="28sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Nombre -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputNombre"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint="@string/hint_nombre"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textTituloRegistro">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="textPersonName"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Apellido -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputApellido"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_apellido"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputNombre">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editApellido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="textPersonName"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Correo -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputCorreo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_correo"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputApellido">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputContrasena"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_contrasena"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputCorreo"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/hl_texto_secundario">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="textPassword"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Confirmar Contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputConfirmarContrasena"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_confirmar_contrasena"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputContrasena"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/hl_texto_secundario">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editConfirmarContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="textPassword"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- DUI -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputDui"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_dui"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputConfirmarContrasena">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editDui"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="text"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Teléfono -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInputTelefono"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_telefono"
+            android:textColorHint="@color/hl_texto_secundario"
+            app:boxStrokeColor="@color/hl_acento_naranja"
+            app:hintTextColor="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputDui">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/hl_fondo_tarjeta"
+                android:inputType="phone"
+                android:textColor="@color/hl_texto_principal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Tipo de Usuario (RadioGroup) -->
+        <TextView
+            android:id="@+id/labelTipoUsuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/label_tipo_usuario"
+            android:textColor="@color/hl_texto_secundario"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutInputTelefono" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupTipoUsuario"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/labelTipoUsuario">
+
+            <RadioButton
+                android:id="@+id/radioEstudiante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:buttonTint="@color/hl_acento_naranja"
+                android:text="@string/radio_estudiante"
+                android:textColor="@color/hl_texto_principal" />
+
+            <RadioButton
+                android:id="@+id/radioContratista"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/hl_acento_naranja"
+                android:text="@string/radio_contratista"
+                android:textColor="@color/hl_texto_principal" />
+        </RadioGroup>
+
+
+        <!-- Botón de Registro -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/botonRegistrarse"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/boton_registrarse"
+            android:textColor="@color/hl_texto_principal"
+            android:textSize="16sp"
+            app:backgroundTint="@color/hl_acento_naranja"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroupTipoUsuario" />
+
+        <!-- Texto para ir a Login -->
+        <TextView
+            android:id="@+id/textIrALogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/label_ir_a_login"
+            android:textColor="@color/hl_texto_secundario"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/botonRegistrarse" />
+
+        <!-- Indicador de Carga (oculto por defecto) -->
+        <ProgressBar
+            android:id="@+id/progressBarRegistro"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/hl_acento_naranja"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

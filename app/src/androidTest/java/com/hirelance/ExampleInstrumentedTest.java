@@ -1,4 +1,4 @@
-package sv.edu.itca.hirelance;
+package com.hirelance;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("sv.edu.itca.hirelance", appContext.getPackageName());
+        assertEquals("com.hirelance", appContext.getPackageName());
     }
 }

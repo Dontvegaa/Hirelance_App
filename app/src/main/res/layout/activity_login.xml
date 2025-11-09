@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hl_fondo_principal"
+    tools:context=".controlador.LoginActivity">
+
+    <!-- Un TextView simple como logo de "Hirelance" -->
+    <TextView
+        android:id="@+id/textLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:fontFamily="sans-serif-black"
+        android:text="HIRELANCE"
+        android:textColor="@color/hl_acento_naranja"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Campo de Correo (Usando Material Design para mejor UI) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutInputCorreo"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/hint_correo"
+        android:textColorHint="@color/hl_texto_secundario"
+        app:boxStrokeColor="@color/hl_acento_naranja"
+        app:hintTextColor="@color/hl_acento_naranja"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textLogo">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editCorreo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/hl_fondo_tarjeta"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/hl_texto_principal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Campo de Contraseña -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutInputContrasena"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/hint_contrasena"
+        android:textColorHint="@color/hl_texto_secundario"
+        app:boxStrokeColor="@color/hl_acento_naranja"
+        app:hintTextColor="@color/hl_acento_naranja"
+        app:layout_constraintEnd_toEndOf="@+id/layoutInputCorreo"
+        app:layout_constraintStart_toStartOf="@+id/layoutInputCorreo"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInputCorreo"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/hl_texto_secundario">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editContrasena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/hl_fondo_tarjeta"
+            android:inputType="textPassword"
+            android:textColor="@color/hl_texto_principal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Botón de Login (Usando Material Button para estilo automático) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/botonLogin"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/boton_iniciar_sesion"
+        android:textColor="@color/hl_texto_principal"
+        android:textSize="16sp"
+        app:backgroundTint="@color/hl_acento_naranja"
+        app:layout_constraintEnd_toEndOf="@+id/layoutInputContrasena"
+        app:layout_constraintStart_toStartOf="@+id/layoutInputContrasena"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInputContrasena" />
+
+    <!-- Texto para ir a Registro -->
+    <TextView
+        android:id="@+id/textIrARegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/label_ir_a_registro"
+        android:textColor="@color/hl_texto_secundario"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/botonLogin"
+        app:layout_constraintStart_toStartOf="@+id/botonLogin"
+        app:layout_constraintTop_toBottomOf="@+id/botonLogin" />
+
+    <!-- Indicador de Carga (oculto por defecto) -->
+    <ProgressBar
+        android:id="@+id/progressBarLogin"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/hl_acento_naranja"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
