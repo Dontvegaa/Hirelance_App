@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--
+      Ítem para "Mi Perfil".
+      Usamos el ícono ic_menu_perfil que creaste.
+      showAsAction="ifRoom" intenta ponerlo en la barra, si no cabe, lo pone en los "..."
+    -->
+    <item
+        android:id="@+id/menu_perfil"
+        android:title="Mi Perfil"
+        android:icon="@drawable/ic_menu_perfil"
+        app:showAsAction="ifRoom" />
+
+    <!--
+      Ítem para "Cerrar Sesión".
+      Usamos el ícono ic_menu_salir.
+      showAsAction="never" lo pondrá siempre dentro del menú de tres puntos (...).
+    -->
+    <item
+        android:id="@+id/menu_salir"
+        android:title="Cerrar Sesión"
+        android:icon="@drawable/ic_menu_salir"
+        app:showAsAction="ifRoom" />
+
+</menu>

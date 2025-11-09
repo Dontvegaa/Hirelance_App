@@ -5,6 +5,7 @@ import com.hirelance.modelo.LoginResponse;
 import com.hirelance.modelo.Postulacion; // <-- Importado
 import com.hirelance.modelo.Proyecto;
 import com.hirelance.modelo.Usuario;
+import com.hirelance.modelo.PerfilEstudiante; // <-- ¡NUEVO IMPORT!
 
 // Imports de Java
 import java.util.List;
@@ -83,4 +84,18 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body Postulacion nuevaPostulacion
     );
+
+    // ======================================================
+    // === 3. ENDPOINTS DE PERFIL (Requieren Token) ===
+    // ======================================================
+
+    /**
+     * Obtiene el perfil del usuario actualmente logueado.
+     * La API usa el Token para saber de quién es el perfil.
+     * (Asumimos que devuelve un PerfilEstudiante por ahora)
+     */
+    @GET("perfil/miperfil") // <-- Ruta de ejemplo, podría ser "perfil/estudiante/yo"
+    Call<PerfilEstudiante> getMiPerfil(@Header("Authorization") String token);
+
+
 }
