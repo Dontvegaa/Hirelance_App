@@ -1,12 +1,12 @@
 package com.hirelance.modelo;
-
+import java.io.Serializable; // <--- 1. Importa esto
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Modelo POJO para la tabla 'habilidad'.
  * Representa una habilidad que un estudiante puede tener (ej: "Photoshop", "Java").
  */
-public class Habilidad {
+public class Habilidad implements Serializable {
 
     @SerializedName("id_habilidad")
     private int idHabilidad;

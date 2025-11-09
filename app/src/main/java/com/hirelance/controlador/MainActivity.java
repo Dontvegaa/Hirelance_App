@@ -113,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.menu_postulaciones) {
+            // El usuario hizo clic en "Mis Postulaciones"
+            Intent intent = new Intent(this, MisPostulacionesActivity.class);
+            startActivity(intent);
+            return true;
+        }
         else if (id == R.id.menu_salir) {
             // El usuario hizo clic en "Cerrar Sesión"
             irALogin(); // El método irALogin ya limpia la sesión

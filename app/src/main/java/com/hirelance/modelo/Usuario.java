@@ -1,5 +1,5 @@
 package com.hirelance.modelo;
-
+import java.io.Serializable; // <--- 1. Importa esto
 import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
@@ -8,7 +8,7 @@ import java.util.Date;
  * Esta clase se usa para mapear los datos JSON recibidos de la API,
  * utilizando GSON para la deserialización.
  */
-public class Usuario {
+public class Usuario implements Serializable {
 
     // SerializedName mapea la clave JSON (igual que la columna de la BD)
     // al nombre del campo en Java.

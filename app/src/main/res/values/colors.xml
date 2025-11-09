@@ -12,5 +12,7 @@
     <color name="hl_acento_naranja">#FF6B00</color>
     <color name="hl_acento_naranja_sec">#FF7E29</color>
     <color name="hl_acento_azul">#4C5CFF</color>
+    <color name="hl_acento_verde">#4CAF50</color>
+    <color name="hl_acento_rojo">#F44336</color>
 
 </resources>

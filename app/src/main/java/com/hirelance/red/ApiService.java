@@ -18,6 +18,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header; // <-- ¡MUY IMPORTANTE! Para enviar el Token
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -96,6 +97,26 @@ public interface ApiService {
      */
     @GET("perfil/miperfil") // <-- Ruta de ejemplo, podría ser "perfil/estudiante/yo"
     Call<PerfilEstudiante> getMiPerfil(@Header("Authorization") String token);
+
+    /**
+     * Actualiza el perfil del estudiante.
+     * Envía el objeto PerfilEstudiante completo en el body.
+     * Requiere el token de autorización.
+     */
+    @PUT("api/perfil/estudiante") // <--- 2. Añade este metodo (ajusta la URL a tu API)
+    Call<PerfilEstudiante> actualizarMiPerfil(
+            @Header("Authorization") String token,
+            @Body PerfilEstudiante perfil
+    );
+
+    /**
+     * Obtiene una lista de todas las postulaciones
+     * realizadas por el estudiante autenticado.
+     */
+    @GET("api/estudiante/mis-postulaciones") // <--- 2. Añade este metodo (ajusta la URL a tu API)
+    Call<List<Postulacion>> getMisPostulaciones(
+            @Header("Authorization") String token
+    );
 
 
 }
