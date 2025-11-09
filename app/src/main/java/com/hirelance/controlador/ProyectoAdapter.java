@@ -1,108 +1,124 @@
 package com.hirelance.controlador;
 
 import android.content.Context;
-import android.content.Intent; // <-- ¡NUEVO IMPORT!
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-// ... (otros imports)
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.hirelance.R;
 import com.hirelance.modelo.Proyecto;
 
-import java.util.ArrayList;
+import java.text.NumberFormat;
 import java.util.List;
-// ... (otros imports)
+import java.util.Locale;
 
+/**
+ * Adaptador para el RecyclerView que muestra la lista de proyectos.
+ * Esta es la versión ACTUALIZADA que recibe la lista en el constructor
+ * y maneja los clics para ir al detalle.
+ */
 public class ProyectoAdapter extends RecyclerView.Adapter<ProyectoAdapter.ProyectoViewHolder> {
 
-    private List<Proyecto> proyectoList;
+    private List<Proyecto> listaProyectos; // <--- Lista de datos
     private Context context;
-    // ... (formatadorMoneda)
+    private NumberFormat formatadorMoneda;
 
-    public ProyectoAdapter(Context context) {
+    // --- ¡ESTE ES EL CONSTRUCTOR CORRECTO! ---
+    // Ahora coincide con lo que MainActivity está llamando: new ProyectoAdapter(listaDeProyectos, this)
+    public ProyectoAdapter(List<Proyecto> listaProyectos, Context context) {
+        this.listaProyectos = listaProyectos;
         this.context = context;
-        this.proyectoList = new ArrayList<>();
-    }
-
-    public void setProyectos(List<Proyecto> proyectos) {
-        this.proyectoList = proyectos;
-        notifyDataSetChanged();
+        // Inicializamos el formateador de moneda aquí para eficiencia
+        this.formatadorMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "SV"));
     }
 
     @NonNull
     @Override
     public ProyectoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflamos el layout de la fila (item_proyecto.xml)
         View view = LayoutInflater.from(context).inflate(R.layout.item_proyecto, parent, false);
-        // Pasamos la lista al ViewHolder para que pueda obtener el ID al hacer clic
-        return new ProyectoViewHolder(view, proyectoList, context); // <-- ¡MODIFICADO!
+        return new ProyectoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProyectoViewHolder holder, int position) {
-        Proyecto proyecto = proyectoList.get(position);
-        // ... (lógica de onBindViewHolder existente)
-        holder.textTituloProyecto.setText(proyecto.getTitulo());
-        String presupuestoFormateado = formatadorMoneda.format(proyecto.getPresupuesto());
-        holder.textPresupuesto.setText(presupuestoFormateado);
-        if (proyecto.getCategoria() != null) {
-            holder.textCategoria.setText(proyecto.getCategoria().getNombre());
-            holder.textCategoria.setVisibility(View.VISIBLE);
-        } else {
-            holder.textCategoria.setVisibility(View.GONE);
-        }
-        if (proyecto.getContratista() != null) {
-            String nombreContratista = proyecto.getContratista().getNombre() + " " + proyecto.getContratista().getApellido();
-            holder.textContratista.setText("Publicado por: " + nombreContratista);
-            holder.textContratista.setVisibility(View.VISIBLE);
-        } else {
-            holder.textContratista.setVisibility(View.GONE);
-        }
+        // Obtenemos el proyecto de la posición actual
+        Proyecto proyecto = listaProyectos.get(position);
+        // Llamamos al método "bind" para pintar los datos
+        holder.bind(proyecto);
     }
 
     @Override
     public int getItemCount() {
-        return proyectoList.size();
+        // El tamaño de la lista determina cuántos items mostrar
+        return listaProyectos.size();
     }
 
 
-    /**
-     * El ViewHolder: Mantiene las referencias a las vistas de 'item_proyecto.xml'.
-     */
-    // ¡MODIFICAMOS EL VIEWHOLDER PARA MANEJAR CLICS!
-    public static class ProyectoViewHolder extends RecyclerView.ViewHolder {
-        TextView textTituloProyecto;
-        TextView textPresupuesto;
-        TextView textCategoria;
-        TextView textContratista;
+    // ======================================================
+    // === EL VIEWHOLDER (El cerebro de cada fila) ===
+    // ======================================================
+    public class ProyectoViewHolder extends RecyclerView.ViewHolder {
 
-        public ProyectoViewHolder(@NonNull View itemView, List<Proyecto> lista, Context ctx) { // <-- ¡MODIFICADO!
+        // Vistas de la tarjeta (item_proyecto.xml)
+        TextView textTitulo, textPresupuesto, textCategoria, textContratista;
+
+        public ProyectoViewHolder(@NonNull View itemView) {
             super(itemView);
-            textTituloProyecto = itemView.findViewById(R.id.textTituloProyecto);
+            // Vinculamos las vistas
+            textTitulo = itemView.findViewById(R.id.textTituloProyecto);
             textPresupuesto = itemView.findViewById(R.id.textPresupuesto);
             textCategoria = itemView.findViewById(R.id.textCategoria);
             textContratista = itemView.findViewById(R.id.textContratista);
 
-            // --- ¡NUEVA LÓGICA DE CLIC! ---
+            // --- ¡AQUÍ MANEJAMOS EL CLIC! (Actualización de Parte 7) ---
             itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition(); // Obtenemos la posición del ítem clickeado
-                if (position != RecyclerView.NO_POSITION) {
-                    // Obtenemos el ID del proyecto de la lista
-                    int proyectoId = lista.get(position).getIdProyecto();
+                int posicion = getAdapterPosition();
+                if (posicion != RecyclerView.NO_POSITION) {
+                    // Obtener el proyecto al que se le dio clic
+                    Proyecto proyectoClicado = listaProyectos.get(posicion);
 
-                    // Creamos un Intent para abrir la DetalleProyectoActivity
-                    Intent intent = new Intent(ctx, DetalleProyectoActivity.class);
+                    // Crear el Intent para abrir DetalleProyectoActivity
+                    Intent intent = new Intent(context, DetalleProyectoActivity.class);
 
-                    // Añadimos el ID del proyecto como "extra" para que la nueva
-                    // actividad sepa qué proyecto cargar.
-                    intent.putExtra(DetalleProyectoActivity.ID_PROYECTO, proyectoId);
+                    // Pasar el ID del proyecto a la nueva actividad
+                    intent.putExtra(DetalleProyectoActivity.ID_PROYECTO, proyectoClicado.getIdProyecto());
 
-                    // Iniciamos la nueva actividad
-                    ctx.startActivity(intent);
+                    // Iniciar la nueva actividad
+                    context.startActivity(intent);
                 }
             });
+        }
+
+        /**
+         * Pinta los datos del objeto Proyecto en las vistas de la fila.
+         */
+        public void bind(Proyecto proyecto) {
+            textTitulo.setText(proyecto.getTitulo());
+
+            // Formatear presupuesto
+            textPresupuesto.setText(formatadorMoneda.format(proyecto.getPresupuesto()));
+
+            // Comprobar si la categoría no es nula
+            if (proyecto.getCategoria() != null) {
+                textCategoria.setText(proyecto.getCategoria().getNombre());
+                textCategoria.setVisibility(View.VISIBLE);
+            } else {
+                textCategoria.setVisibility(View.GONE); // Ocultar si no hay categoría
+            }
+
+            // Comprobar si el contratista no es nulo
+            if (proyecto.getContratista() != null) {
+                String nombreCompleto = proyecto.getContratista().getNombre() + " " + proyecto.getContratista().getApellido();
+                textContratista.setText(nombreCompleto);
+            } else {
+                textContratista.setText("Contratista Anónimo");
+            }
         }
     }
 }

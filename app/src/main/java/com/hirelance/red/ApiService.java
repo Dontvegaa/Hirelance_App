@@ -1,38 +1,40 @@
 package com.hirelance.red;
 
+// Imports de Modelos
 import com.hirelance.modelo.LoginResponse;
+import com.hirelance.modelo.Postulacion; // <-- Importado
 import com.hirelance.modelo.Proyecto;
 import com.hirelance.modelo.Usuario;
-import com.hirelance.modelo.Postulacion;
 
-import retrofit2.http.Header;
-
+// Imports de Java
 import java.util.List;
 
+// Imports de Retrofit
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header; // <-- ¡MUY IMPORTANTE! Para enviar el Token
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
  * Interfaz que define todos los endpoints de la API de Hirelance.
- * Retrofit usará esta interfaz para generar el código de red.
+ * Esta es la versión CORREGIDA que funciona con todas las actividades (Parte 1 a 8).
  */
 public interface ApiService {
 
+    // ======================================================
+    // === 1. ENDPOINTS DE AUTENTICACIÓN (Sin Token) ===
+    // ======================================================
+
     /**
      * Petición para iniciar sesión.
-     * Envía correo y contraseña como campos de formulario.
-     *
-     * @param correo Correo del usuario
-     * @param contrasena Contraseña del usuario
-     * @return Un Call que, al tener éxito, devuelve un LoginResponse (Usuario + Token)
+     * (Llamado por LoginActivity)
      */
     @FormUrlEncoded
-    @POST("auth/login") // Endpoint de la API (ej: .../v1/auth/login)
+    @POST("auth/login") // Usando la ruta de tu archivo original
     Call<LoginResponse> login(
             @Field("correo") String correo,
             @Field("contrasena") String contrasena
@@ -40,17 +42,45 @@ public interface ApiService {
 
     /**
      * Petición para registrar un nuevo usuario.
-     * Envía un objeto Usuario completo en el cuerpo (body) de la petición,
-     * serializado a JSON automáticamente por GSON.
-     *
-     * @param usuario Objeto Usuario con los datos del formulario de registro
-     * @return Un Call que, al tener éxito, devuelve el Usuario recién creado (con su ID)
+     * (Llamado por RegisterActivity)
      */
-    @POST("auth/register") // Endpoint de la API (ej: .../v1/auth/register)
+    @POST("auth/register") // Usando la ruta de tu archivo original
     Call<Usuario> register(@Body Usuario usuario);
 
-    // --- Aquí añadiremos más peticiones en el futuro ---
-    @GET("proyectos") Call<List<Proyecto>> getProyectos();
-    @GET("proyectos/{id}") Call<Proyecto> getProyectoDetalle(String tokenActual, @Path("id") int idProyecto);
-    @POST("proyectos/{id}/postular") Call<Postulacion> postular(@Body Postulacion postulacion);
+
+    // ======================================================
+    // === 2. ENDPOINTS PROTEGIDOS (Requieren Token) ===
+    // ======================================================
+
+    /**
+     * Obtiene la lista de todos los proyectos.
+     * (Llamado por MainActivity)
+     * @param token Token de autorización (Ej: "Bearer ...")
+     */
+    @GET("proyectos")
+    Call<List<Proyecto>> getProyectos(@Header("Authorization") String token);
+
+    /**
+     * Obtiene un proyecto específico por su ID.
+     * (Llamado por DetalleProyectoActivity)
+     * @param token Token de autorización
+     * @param idProyecto El ID del proyecto a cargar
+     */
+    @GET("proyectos/{id}") // Usando la ruta de tu archivo original
+    Call<Proyecto> getProyectoDetalle(
+            @Header("Authorization") String token,
+            @Path("id") int idProyecto
+    );
+
+    /**
+     * Envía una nueva postulación a un proyecto.
+     * (Llamado por PostulacionActivity)
+     * @param token Token de autorización
+     * @param nuevaPostulacion Objeto Postulacion con los datos del formulario.
+     */
+    @POST("postulacion") // Endpoint que PostulacionActivity.java espera
+    Call<Postulacion> enviarPostulacion(
+            @Header("Authorization") String token,
+            @Body Postulacion nuevaPostulacion
+    );
 }

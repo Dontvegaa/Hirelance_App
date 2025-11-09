@@ -1,23 +1,23 @@
 package com.hirelance.controlador;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.hirelance.util.SessionManager; // <-- 1. IMPORTAR
-
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.hirelance.R;
 import com.hirelance.modelo.Proyecto;
 import com.hirelance.red.ApiService;
 import com.hirelance.red.RetrofitClient;
+import com.hirelance.util.SessionManager; // <-- 1. IMPORTAR
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,73 +27,77 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     // Vistas
-    private RecyclerView recyclerViewProyectos;
+    private RecyclerView recyclerProyectos;
     private ProgressBar progressBarMain;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    // Red y session
+    // Red y Sesión
     private ApiService apiService;
-    private ProyectoAdapter proyectoAdapter;
-
     private SessionManager sessionManager; // <-- 2. DECLARAR SESSION MANAGER
     private String tokenActual;            // <-- 3. DECLARAR VARIABLE PARA EL TOKEN
 
+    // RecyclerView
+    private ProyectoAdapter proyectoAdapter;
+    private List<Proyecto> listaDeProyectos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 1. Inicializar API Service
+        // --- 4. CONFIGURAR SESIÓN ---
+        sessionManager = new SessionManager(getApplicationContext());
+        tokenActual = sessionManager.getToken();
+
+        // Si no hay token, no debería estar aquí. Lo enviamos al Login.
+        if (tokenActual == null) {
+            irALogin();
+            return; // Detenemos la ejecución de onCreate
+        }
+        // --- FIN DE CONFIGURACIÓN DE SESIÓN ---
+
+        // Configurar API
         apiService = RetrofitClient.getClient().create(ApiService.class);
 
-        // 2. Vincular Vistas
+        // Vincular Vistas
         vincularVistas();
 
-        // 3. Configurar RecyclerView
+        // Configurar RecyclerView
         configurarRecyclerView();
 
-        // 4. Configurar Swipe-to-Refresh
+        // Configurar SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Llama a cargarProyectos() pero no muestra el ProgressBar central
-            cargarProyectos(false);
+            // El listener se activa al "jalar"
+            cargarProyectos();
         });
 
-        // 5. Cargar los datos por primera vez
-        cargarProyectos(true);
+        // Cargar los datos por primera vez
+        cargarProyectos();
     }
 
     private void vincularVistas() {
-        // (La Toolbar la vinculamos si queremos añadirle menú, si no, no es necesario)
-        recyclerViewProyectos = findViewById(R.id.recyclerViewProyectos);
+        recyclerProyectos = findViewById(R.id.recyclerProyectos);
         progressBarMain = findViewById(R.id.progressBarMain);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
     private void configurarRecyclerView() {
-        // Usamos un LayoutManager lineal (lista vertical)
-        recyclerViewProyectos.setLayoutManager(new LinearLayoutManager(this));
-        // Creamos el adaptador (vacío al inicio)
-        proyectoAdapter = new ProyectoAdapter(this);
-        // Asignamos el adaptador al RecyclerView
-        recyclerViewProyectos.setAdapter(proyectoAdapter);
+        proyectoAdapter = new ProyectoAdapter(listaDeProyectos, this);
+        recyclerProyectos.setLayoutManager(new LinearLayoutManager(this));
+        recyclerProyectos.setAdapter(proyectoAdapter);
     }
 
     /**
      * Llama a la API para obtener la lista de proyectos.
-     * @param mostrarProgressBarCentral true si debe mostrar el ProgressBar del centro,
-     * false si solo debe mostrar el de SwipeRefresh.
      */
-    private void cargarProyectos(boolean mostrarProgressBarCentral) {
-        // Mostrar el indicador de carga apropiado
-        if (mostrarProgressBarCentral) {
+    private void cargarProyectos() {
+        // Mostramos el indicador de carga
+        if (!swipeRefreshLayout.isRefreshing()) {
             progressBarMain.setVisibility(View.VISIBLE);
-        } else {
-            // El de SwipeRefresh se muestra automáticamente
         }
 
-        // Hacemos la llamada a la API (definida en ApiService)
-        Call<List<Proyecto>> call = apiService.getProyectos();
+        // --- 5. PASAR EL TOKEN A LA LLAMADA (ESTA LÍNEA ARREGLA TU ERROR) ---
+        Call<List<Proyecto>> call = apiService.getProyectos(tokenActual);
 
         call.enqueue(new Callback<List<Proyecto>>() {
             @Override
@@ -103,27 +107,39 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    // ¡Éxito! Tenemos la lista.
-                    List<Proyecto> proyectos = response.body();
-
-                    // (Aquí podríamos verificar si la lista está vacía y mostrar un mensaje)
-
-                    // Enviamos la lista al adaptador
-                    proyectoAdapter.setProyectos(proyectos);
-
+                    // ¡Éxito!
+                    listaDeProyectos.clear();
+                    listaDeProyectos.addAll(response.body());
+                    proyectoAdapter.notifyDataSetChanged(); // Notifica al adapter que los datos cambiaron
+                } else if (response.code() == 401) {
+                    // Error 401 = Token inválido o expirado
+                    Toast.makeText(MainActivity.this, "Tu sesión ha expirado.", Toast.LENGTH_SHORT).show();
+                    irALogin();
                 } else {
-                    // Error del servidor (ej. 401 No Autorizado, 500 Error Interno)
-                    Toast.makeText(MainActivity.this, "Error al cargar los proyectos.", Toast.LENGTH_SHORT).show();
+                    // Otro error
+                    Toast.makeText(MainActivity.this, R.string.error_red, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Proyecto>> call, Throwable t) {
-                // Error de red (sin conexión, servidor caído)
+                // Error de red
                 progressBarMain.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(MainActivity.this, R.string.error_red, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Método para enviar al usuario a LoginActivity y limpiar la sesión.
+     */
+    private void irALogin() {
+        sessionManager.clearSession(); // Limpiamos la sesión guardada
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        // Flags para limpiar el historial y que no pueda volver a MainActivity con "atrás"
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish(); // Cerramos esta actividad
     }
 }
