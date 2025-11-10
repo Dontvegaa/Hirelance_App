@@ -9,6 +9,8 @@ import java.util.List; // Para la lista de habilidades
  */
 public class PerfilEstudiante implements Serializable {
 
+    @SerializedName("id_usuario")
+    private int idUsuario;
     @SerializedName("id_perfil")
     private int idPerfil;
 
@@ -48,6 +50,14 @@ public class PerfilEstudiante implements Serializable {
 
 
     // --- Getters y Setters ---
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
     public int getIdPerfil() {
         return idPerfil;

@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.IOException; // <--- 1. IMPORTA ESTO
 
 import com.hirelance.util.SessionManager;
 
@@ -143,16 +145,35 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     // Error del servidor (ej. 401 - No autorizado, 404 - No encontrado)
                     // (El correo o contraseña son incorrectos)
-                    Toast.makeText(LoginActivity.this, R.string.error_login_incorrecto, Toast.LENGTH_SHORT).show();
+                    String errorBody = "Error desconocido en la respuesta";
+                    if (response.errorBody() != null) {
+                        try {
+                            // Leemos el JSON de error que nos manda el PHP
+                            errorBody = response.errorBody().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Mostramos el error real en un Toast largo
+                    Toast.makeText(LoginActivity.this, "Error: " + errorBody, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                // Error de red (ej. no hay internet, el servidor está caído)
+                // --- 2. ¡ESTE ES EL CAMBIO! ---
                 progressBarLogin.setVisibility(View.GONE);
                 botonLogin.setEnabled(true);
-                Toast.makeText(LoginActivity.this, R.string.error_red, Toast.LENGTH_SHORT).show();
+
+                // Obtenemos el mensaje de la excepción real
+                String errorMessage = t.getMessage();
+
+                // Lo mostramos en el Logcat para verlo completo
+                Log.e("LOGIN_ERROR", "onFailure: " + errorMessage, t);
+
+                // Lo mostramos en un Toast largo
+                Toast.makeText(LoginActivity.this, "Error (onFailure): " + errorMessage, Toast.LENGTH_LONG).show();
             }
         });
     }

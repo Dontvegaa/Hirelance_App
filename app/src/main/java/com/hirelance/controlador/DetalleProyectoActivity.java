@@ -19,7 +19,6 @@ import com.hirelance.red.ApiService;
 import com.hirelance.red.RetrofitClient;
 
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -48,7 +47,7 @@ public class DetalleProyectoActivity extends AppCompatActivity {
     // Herramientas de formato
     private Locale localeElSalvador = new Locale("es", "SV");
     private NumberFormat formatadorMoneda = NumberFormat.getCurrencyInstance(localeElSalvador);
-    private SimpleDateFormat formatadorFecha = new SimpleDateFormat("dd 'de' MMMM, yyyy", localeElSalvador);
+    // private SimpleDateFormat formatadorFecha = new SimpleDateFormat("dd 'de' MMMM, yyyy", localeElSalvador);  <- ya no lo usamos
 
 
     @Override
@@ -153,8 +152,10 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         textPresupuestoDetalle.setText(formatadorMoneda.format(proyecto.getPresupuesto()));
 
         // Formateo de Fecha Límite
+        // (La línea original 'formatadorFecha.format(...)' causaba el crash)
         if (proyecto.getFechaLimite() != null) {
-            textFechaLimiteDetalle.setText(formatadorFecha.format(proyecto.getFechaLimite()));
+            // Simplemente mostramos el String tal como viene de la API
+            textFechaLimiteDetalle.setText(proyecto.getFechaLimite());
         } else {
             textFechaLimiteDetalle.setText("No especificada");
         }

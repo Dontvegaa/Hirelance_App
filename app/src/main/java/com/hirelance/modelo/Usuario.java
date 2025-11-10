@@ -37,7 +37,7 @@ public class Usuario implements Serializable {
     private String telefono;
 
     @SerializedName("fecha_registro")
-    private Date fechaRegistro; // GSON puede parsear fechas si el formato es estándar (ISO 8601)
+    private String fechaRegistro; // <-- Cambiado de Date a String
 
     @SerializedName("estado")
     private String estado; // "activo", "inactivo", "baneado"
@@ -123,11 +123,11 @@ public class Usuario implements Serializable {
         this.telefono = telefono;
     }
 
-    public Date getFechaRegistro() {
+    public String getFechaRegistro() { // <-- Cambiado de Date a String
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(Date fechaRegistro) {
+    public void setFechaRegistro(String fechaRegistro) { // <-- Cambiado de Date a String
         this.fechaRegistro = fechaRegistro;
     }
 

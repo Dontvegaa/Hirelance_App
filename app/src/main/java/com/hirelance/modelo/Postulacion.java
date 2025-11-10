@@ -1,7 +1,6 @@
 package com.hirelance.modelo;
 import java.io.Serializable; // <--- 2. Importa Serializable (buena práctica)
 import com.google.gson.annotations.SerializedName;
-import java.util.Date;
 
 /**
  * Modelo POJO para la tabla 'postulaciones'.
@@ -27,7 +26,7 @@ public class Postulacion implements Serializable {
     private String tiempoEstimado;
 
     @SerializedName("fecha_postulacion")
-    private Date fechaPostulacion;
+    private String fechaPostulacion; // <-- Cambiado de Date a String
 
     @SerializedName("estado")
     private String estado; // "pendiente", "aceptada", "rechazada"
@@ -74,12 +73,13 @@ public class Postulacion implements Serializable {
         return montoOfertado;
     }
 
-    public String getTiempoEstimado() {
-        return tiempoEstimado;
+    public String getFechaPostulacion() { // <-- Cambiado de Date a String
+        return fechaPostulacion;
     }
 
-    public Date getFechaPostulacion() {
-        return fechaPostulacion;
+    // (Opcional: puedes añadir un setter si lo necesitas)
+    public void setFechaPostulacion(String fechaPostulacion) { // <-- Cambiado de Date a String
+        this.fechaPostulacion = fechaPostulacion;
     }
 
     public String getEstado() {

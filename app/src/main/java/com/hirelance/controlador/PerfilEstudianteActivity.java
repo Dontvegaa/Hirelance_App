@@ -46,6 +46,7 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
     private ApiService apiService;
     private SessionManager sessionManager;
     private String tokenActual;
+    private int idUsuarioActual; // <--- 1. AÑADE ESTA VARIABLE
 
     // RecyclerView
     private HabilidadAdapter habilidadAdapter;
@@ -68,8 +69,12 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
         apiService = RetrofitClient.getClient().create(ApiService.class);
         tokenActual = sessionManager.getToken();
 
-        if (tokenActual == null) {
-            // Esto no debería pasar si llegó desde MainActivity, pero es una buena práctica
+        // 2. OBTÉN EL ID DEL USUARIO
+        // (Asumiendo que tu SessionManager tiene un metodo getUserId()
+        // basado en donde lo guardaste en LoginActivity)
+        idUsuarioActual = sessionManager.getUserId();
+
+        if (tokenActual == null || idUsuarioActual == -1) { // -1 si el ID no se encuentra
             Toast.makeText(this, "Sesión inválida.", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -147,7 +152,8 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
     private void cargarDatosPerfil() {
         progressBarPerfil.setVisibility(View.VISIBLE);
 
-        Call<PerfilEstudiante> call = apiService.getMiPerfil(tokenActual);
+        // Pasa el idUsuarioActual a la llamada de la API
+        Call<PerfilEstudiante> call = apiService.getMiPerfil(tokenActual, idUsuarioActual);
         call.enqueue(new Callback<PerfilEstudiante>() {
             @Override
             public void onResponse(Call<PerfilEstudiante> call, Response<PerfilEstudiante> response) {
@@ -166,7 +172,8 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<PerfilEstudiante> call, Throwable t) {
                 progressBarPerfil.setVisibility(View.GONE);
-                Toast.makeText(PerfilEstudianteActivity.this, R.string.error_red, Toast.LENGTH_SHORT).show();
+                // ¡IMPORTANTE! Cambia esto para ver el error real si falla
+                Toast.makeText(PerfilEstudianteActivity.this, "onFailure: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

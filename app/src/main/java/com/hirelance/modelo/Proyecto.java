@@ -23,10 +23,10 @@ public class Proyecto {
     private double presupuesto; // SQL DECIMAL se mapea bien a double
 
     @SerializedName("fecha_publicacion")
-    private Date fechaPublicacion; // SQL TIMESTAMP se mapea a java.util.Date
+    private String fechaPublicacion; // <-- Cambiado de Date a String
 
     @SerializedName("fecha_limite")
-    private Date fechaLimite; // SQL DATE también se mapea a java.util.Date
+    private String fechaLimite; // <-- Cambiado de Date a String
 
     @SerializedName("estado")
     private String estado; // El ENUM de SQL se maneja como String
@@ -85,19 +85,19 @@ public class Proyecto {
         this.presupuesto = presupuesto;
     }
 
-    public Date getFechaPublicacion() {
+    public String getFechaPublicacion() { // <-- Cambiado de Date a String
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(Date fechaPublicacion) {
+    public void setFechaPublicacion(String fechaPublicacion) { // <-- Cambiado de Date a String
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public Date getFechaLimite() {
+    public String getFechaLimite() { // <-- Cambiado de Date a String
         return fechaLimite;
     }
 
-    public void setFechaLimite(Date fechaLimite) {
+    public void setFechaLimite(String fechaLimite) { // <-- Cambiado de Date a String
         this.fechaLimite = fechaLimite;
     }
 

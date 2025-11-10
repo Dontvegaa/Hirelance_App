@@ -36,6 +36,7 @@ public class MisPostulacionesActivity extends AppCompatActivity {
     private ApiService apiService;
     private SessionManager sessionManager;
     private String tokenActual;
+    private int idUsuarioActual; // <--- 1. AÑADE ESTA VARIABLE
 
     // RecyclerView
     private PostulacionAdapter postulacionAdapter;
@@ -50,6 +51,9 @@ public class MisPostulacionesActivity extends AppCompatActivity {
         sessionManager = new SessionManager(getApplicationContext());
         apiService = RetrofitClient.getClient().create(ApiService.class);
         tokenActual = sessionManager.getToken();
+
+        // Asigna el ID del usuario desde el SessionManager
+        idUsuarioActual = sessionManager.getUserId();
 
         if (tokenActual == null) {
             Toast.makeText(this, "Sesión inválida.", Toast.LENGTH_SHORT).show();
@@ -103,7 +107,9 @@ public class MisPostulacionesActivity extends AppCompatActivity {
     private void cargarPostulaciones() {
         mostrarCarga(true);
 
-        Call<List<Postulacion>> call = apiService.getMisPostulaciones(tokenActual);
+        // Pasa el idUsuarioActual a la llamada de la API
+        Call<List<Postulacion>> call = apiService.getMisPostulaciones(tokenActual, idUsuarioActual);
+
         call.enqueue(new Callback<List<Postulacion>>() {
             @Override
             public void onResponse(Call<List<Postulacion>> call, Response<List<Postulacion>> response) {
@@ -128,7 +134,8 @@ public class MisPostulacionesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Postulacion>> call, Throwable t) {
                 mostrarCarga(false);
-                Toast.makeText(MisPostulacionesActivity.this, R.string.error_red, Toast.LENGTH_SHORT).show();
+                // ¡IMPORTANTE! Cambia esto para ver el error real si falla
+                Toast.makeText(MisPostulacionesActivity.this, "onFailure: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
