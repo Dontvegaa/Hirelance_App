@@ -27,4 +27,12 @@
     <string name="exito_registro">¡Registro exitoso! Por favor, inicia sesión.</string>
     <string name="bienvenida_usuario">¡Bienvenido, %1$s!</string>
 
+    <string-array name="anios_carrera">
+        <item>Primer año</item>
+        <item>Segundo año</item>
+        <item>Tercer año</item>
+        <item>Cuarto año</item>
+        <item>Quinto año o más</item>
+    </string-array>
+
 </resources>

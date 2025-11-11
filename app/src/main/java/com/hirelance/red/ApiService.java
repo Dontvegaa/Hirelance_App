@@ -21,6 +21,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import com.hirelance.modelo.RegisterEstudianteDTO;
 
 /**
  * Interfaz que define todos los endpoints de la API de Hirelance.
@@ -48,8 +49,8 @@ public interface ApiService {
      * Petición para registrar un nuevo usuario.
      * (Llamado por RegisterActivity)
      */
-    @POST("register.php") // Apunta a un script que crearemos luego
-    Call<Usuario> register(@Body Usuario usuario);
+    @POST("registerEstudiante.php") // Apunta a un nuevo script
+    Call<Usuario> registerEstudiante(@Body RegisterEstudianteDTO dto);
 
 
     // ======================================================

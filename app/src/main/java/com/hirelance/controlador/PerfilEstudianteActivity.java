@@ -12,6 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar; // Mantenemos la importación de Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -193,9 +197,6 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
         textCarrera.setText(perfil.getCarrera());
         textDescripcionPerfil.setText(perfil.getDescripcion());
 
-        // (Aquí iría la lógica para cargar la imagen con Glide o Picasso)
-        // Glide.with(this).load(perfil.getFotoPerfil()).into(imgFotoPerfil);
-
         // Llenar la lista de habilidades
         if (perfil.getHabilidades() != null && !perfil.getHabilidades().isEmpty()) {
             listaHabilidades.clear();
@@ -203,11 +204,32 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
             habilidadAdapter.notifyDataSetChanged();
         }
 
+        // --- 3. ¡AQUÍ ESTÁ LA LÓGICA DE LA IMAGEN! ---
+        // (Asumiendo que tu POJO tiene getFoto_perfil() del DTO que creamos)
+        String fotoBase64 = perfil.getFotoPerfil();
+
+        if (fotoBase64 != null && !fotoBase64.isEmpty()) {
+            try {
+                // Decodificar el String Base64 a un array de bytes
+                byte[] decodedString = Base64.decode(fotoBase64, Base64.DEFAULT);
+                // Convertir el array de bytes en un Bitmap
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                // ¡Pintar la imagen!
+                imgFotoPerfil.setImageBitmap(decodedByte);
+            } catch (Exception e) {
+                // En caso de error, mostrar la imagen por defecto
+                imgFotoPerfil.setImageResource(R.drawable.ic_menu_perfil);
+            }
+        } else {
+            // Si no hay foto, mostrar la imagen por defecto
+            imgFotoPerfil.setImageResource(R.drawable.ic_menu_perfil);
+        }
+
         // <--- AÑADIDO: Hacemos visible el botón solo después de cargar los datos
         btnEditarPerfil.setVisibility(View.VISIBLE);
     }
 
-    // <--- AÑADIDO: Nuevo método para manejar la navegación
+    // <--- AÑADIDO: Nuevo metodo para manejar la navegación
     /**
      * Modificado para usar el LAUNCHER en lugar de startActivity.
      */
