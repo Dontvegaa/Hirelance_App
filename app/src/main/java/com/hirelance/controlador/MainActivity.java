@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
     }
 
-    // --- ¡NUEVO! MÉTODO PARA CREAR EL MENÚ ---
+    // --- ¡NUEVO! METODO PARA CREAR EL MENÚ ---
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Infla el menú (añade los ítems a la barra de acción)
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // --- ¡NUEVO! MÉTODO PARA MANEJAR CLICS EN EL MENÚ ---
+    // --- ¡NUEVO! METODO PARA MANEJAR CLICS EN EL MENÚ ---
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Maneja los clics en los ítems de la barra de acción

@@ -138,6 +138,7 @@ public class PostulacionActivity extends AppCompatActivity {
                     // ¡Éxito!
                     Toast.makeText(PostulacionActivity.this, "¡Postulación enviada con éxito!", Toast.LENGTH_LONG).show();
                     // Cerramos la actividad y volvemos al detalle del proyecto
+                    setResult(RESULT_OK); // Notifica a la pantalla anterior que t0do salio bien
                     finish();
                 } else {
                     // Error del servidor (ej. 401 No Autorizado, 400 Mal Request)

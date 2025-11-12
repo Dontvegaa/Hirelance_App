@@ -26,6 +26,9 @@ public class PerfilEstudiante implements Serializable {
     @SerializedName("portafolio_url")
     private String portafolioUrl;
 
+    @SerializedName("universidades")
+    private List<Universidad> universidades;
+
     @SerializedName("foto_perfil")
     private String fotoPerfil;
 
@@ -53,6 +56,14 @@ public class PerfilEstudiante implements Serializable {
 
     public int getIdUsuario() {
         return idUsuario;
+    }
+
+    public List<Universidad> getUniversidades() {
+        return universidades;
+    }
+
+    public void setUniversidades(List<Universidad> universidades) {
+        this.universidades = universidades;
     }
 
     public void setIdUsuario(int idUsuario) {

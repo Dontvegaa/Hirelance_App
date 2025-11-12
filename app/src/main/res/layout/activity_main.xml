@@ -12,15 +12,15 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbarMain"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/hl_fondo_tarjeta"
-            app:title="Hirelance"
-            app:titleTextColor="@color/hl_acento_naranja" />
+            app:logo="@drawable/hirelance_logo" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Layout para 'Jalar y Recargar' (Pull-to-refresh) -->

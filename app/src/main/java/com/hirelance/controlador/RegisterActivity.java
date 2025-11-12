@@ -166,7 +166,6 @@ public class RegisterActivity extends AppCompatActivity {
      * crea el DTO y llama a la API.
      */
     private void intentarRegistro() {
-        // --- 1. VALIDACIÓN (Simplificada, puedes añadir más) ---
         if (!validarFormulario()) {
             Toast.makeText(this, "Por favor, corrige los campos marcados", Toast.LENGTH_SHORT).show();
             return;
@@ -216,36 +215,37 @@ public class RegisterActivity extends AppCompatActivity {
         // --- 4. LLAMAR A LA API ---
         mostrarCarga(true);
 
+        // --- CAMBIO 1: La llamada ahora es Call<Usuario> ---
         Call<Usuario> call = apiService.registerEstudiante(dto);
+
+        // --- CAMBIO 2: El Callback ahora es Callback<Usuario> ---
         call.enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 mostrarCarga(false);
+
                 if (response.isSuccessful() && response.body() != null) {
-                    // ¡Éxito!
+                    // ¡ÉXITO!
                     Toast.makeText(RegisterActivity.this, "¡Registro exitoso! Por favor, inicia sesión.", Toast.LENGTH_LONG).show();
-                    finish(); // Regresa a LoginActivity
+                    finish();
                 } else {
-                    // --- 3. ¡BLOQUE DE ERROR onResponse ACTUALIZADO! ---
+                    // Error 409 (Correo duplicado), 500
                     String errorMsg = "Error desconocido.";
                     if (response.errorBody() != null) {
                         try {
                             errorMsg = response.errorBody().string();
                         } catch (IOException e) { e.printStackTrace(); }
                     }
-                    // Ya no usamos Toast, usamos el diálogo
                     mostrarErrorDialog("Error del Servidor (Cód: " + response.code() + ")", errorMsg);
                 }
             }
 
             @Override
             public void onFailure(Call<Usuario> call, Throwable t) {
+                // Volvimos al 'onFailure' original de GSON
                 mostrarCarga(false);
-                // --- 4. ¡BLOQUE DE ERROR onFailure ACTUALIZADO! ---
                 String errorCompleto = t.getMessage();
                 Log.e("REGISTER_ERROR", "onFailure: " + errorCompleto, t);
-
-                // Ya no usamos Toast, usamos el diálogo
                 mostrarErrorDialog("Error en onFailure (GSON/Red)", errorCompleto);
             }
         });

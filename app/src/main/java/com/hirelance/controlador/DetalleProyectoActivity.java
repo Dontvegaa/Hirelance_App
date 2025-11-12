@@ -7,8 +7,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat; // <--- 1. IMPORTA ESTO
 import com.hirelance.util.SessionManager; // <-- ¡AÑADE ESTE!
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -43,6 +45,8 @@ public class DetalleProyectoActivity extends AppCompatActivity {
     private SessionManager sessionManager; // <-- AÑADIR
     private int idProyectoActual;
     private String tokenActual; // <-- AÑADIR
+    private int idUsuarioActual; // <--- 2. AÑADE ESTO
+    private ActivityResultLauncher<Intent> postulacionLauncher;
 
     // Herramientas de formato
     private Locale localeElSalvador = new Locale("es", "SV");
@@ -55,6 +59,21 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_proyecto);
 
+        // --- 3. REGISTRA EL LAUNCHER (¡Haz esto en onCreate!) ---
+        // Preparamos cómo vamos a recibir la respuesta
+        postulacionLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // Esto se ejecuta cuando 'PostulacionActivity' se cierra
+                    if (result.getResultCode() == RESULT_OK) {
+                        // ¡Éxito! El usuario acaba de postularse.
+                        // Volvemos a llamar a la API para refrescar los datos.
+                        Toast.makeText(this, "Actualizando estado...", Toast.LENGTH_SHORT).show();
+                        cargarDetalleProyecto();
+                    }
+                }
+        );
+
         // 1. Obtener el ID del Intent
         idProyectoActual = getIntent().getIntExtra(ID_PROYECTO, -1);
 
@@ -64,6 +83,7 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         // ¡AÑADE ESTAS LÍNEAS!
         sessionManager = new SessionManager(getApplicationContext());
         tokenActual = sessionManager.getToken();
+        idUsuarioActual = sessionManager.getUserId();
 
         // ¡AÑADE ESTA VALIDACIÓN!
         if (idProyectoActual == -1 || tokenActual == null) {
@@ -79,14 +99,7 @@ public class DetalleProyectoActivity extends AppCompatActivity {
         // 3. Cargar los datos del proyecto
         cargarDetalleProyecto();
 
-        // 4. Configurar botón de Postularse (WIP para Parte 8)
-        btnPostularse.setOnClickListener(v -> {
-            // Aquí abriremos la pantalla de postulación
-            Toast.makeText(this, "WIP: Abriendo pantalla de postulación...", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, PostulacionActivity.class);
-            intent.putExtra(PostulacionActivity.ID_PROYECTO, idProyectoActual);
-            startActivity(intent);
-        });
+
     }
 
     private void vincularVistas() {
@@ -119,7 +132,8 @@ public class DetalleProyectoActivity extends AppCompatActivity {
     private void cargarDetalleProyecto() {
         progressBarDetalle.setVisibility(View.VISIBLE);
 
-        Call<Proyecto> call = apiService.getProyectoDetalle(tokenActual, idProyectoActual);
+        // Ahora pasamos el idUsuarioActual
+        Call<Proyecto> call = apiService.getProyectoDetalle(tokenActual, idProyectoActual, idUsuarioActual);
         call.enqueue(new Callback<Proyecto>() {
             @Override
             public void onResponse(Call<Proyecto> call, Response<Proyecto> response) {
@@ -176,7 +190,32 @@ public class DetalleProyectoActivity extends AppCompatActivity {
             textContratistaDetalle.setText("Anónimo");
         }
 
-        // (Aquí podríamos ocultar el botón "Postularse" si el usuario
-        // que está viendo es el mismo que publicó el proyecto)
+        // --- 7. ¡AQUÍ ESTÁ LA NUEVA LÓGICA DEL BOTÓN! ---
+        if (proyecto.isHaPostulado()) {
+            // El usuario YA se postuló
+            btnPostularse.setText("Ver Mis Postulaciones");
+            btnPostularse.setBackgroundColor(ContextCompat.getColor(this, R.color.hl_fondo_tarjeta));
+            btnPostularse.setTextColor(ContextCompat.getColor(this, R.color.hl_acento_naranja));
+
+            btnPostularse.setOnClickListener(v -> {
+                // Abrir la pantalla "Mis Postulaciones"
+                Intent intent = new Intent(this, MisPostulacionesActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            // El usuario NO se ha postulado
+            btnPostularse.setText("Postularse Ahora");
+            btnPostularse.setBackgroundColor(ContextCompat.getColor(this, R.color.hl_acento_naranja));
+            btnPostularse.setTextColor(ContextCompat.getColor(this, R.color.white));
+
+            btnPostularse.setOnClickListener(v -> {
+                // --- ¡USA EL LAUNCHER! ---
+                Intent intent = new Intent(this, PostulacionActivity.class);
+                intent.putExtra(PostulacionActivity.ID_PROYECTO, idProyectoActual);
+                postulacionLauncher.launch(intent); // <-- USA LAUNCH()
+            });
+        }
+        // Hacemos visible el botón ahora que tiene la lógica correcta
+        btnPostularse.setVisibility(View.VISIBLE);
     }
 }

@@ -73,6 +73,10 @@ public class Postulacion implements Serializable {
         return montoOfertado;
     }
 
+    public String getTiempoEstimado() {
+        return tiempoEstimado;
+    }
+
     public String getFechaPostulacion() { // <-- Cambiado de Date a String
         return fechaPostulacion;
     }

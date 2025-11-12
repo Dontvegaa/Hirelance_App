@@ -136,6 +136,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/labelAcercaDe"
                 tools:text="Estudiante de 4to año apasionado por el desarrollo Android y backend con SpringBoot..." />
 
+
+
             <TextView
                 android:id="@+id/labelHabilidades"
                 android:layout_width="wrap_content"
@@ -164,6 +166,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/labelHabilidades"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_habilidad" />
+
+            <TextView
+                android:id="@+id/labelEducacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Educación"
+                android:textColor="@color/hl_texto_principal"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerHabilidades" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerUniversidades"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelEducacion"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_universidad" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

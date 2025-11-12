@@ -46,12 +46,12 @@ public interface ApiService {
     );
 
     /**
-     * Petición para registrar un nuevo usuario.
-     * (Llamado por RegisterActivity)
+     * Petición para registrar un nuevo ESTUDIANTE.
      */
-    @POST("registerEstudiante.php") // Apunta a un nuevo script
-    Call<Usuario> registerEstudiante(@Body RegisterEstudianteDTO dto);
-
+    // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
+    // Volvemos a poner Call<Usuario>
+    @POST("registerEstudiante.php")
+    Call<Usuario> registerEstudiante(@Body RegisterEstudianteDTO dto); // <-- CAMBIADO DE VUELTA A Usuario
 
     // ======================================================
     // === 2. ENDPOINTS PROTEGIDOS (Requieren Token) ===
@@ -77,10 +77,11 @@ public interface ApiService {
      * @param token Token de autorización
      * @param idProyecto El ID del proyecto a cargar
      */
-    @GET("getProyectoDetalle.php") // Apunta al nuevo archivo .php
+    @GET("getProyectoDetalle.php")
     Call<Proyecto> getProyectoDetalle(
             @Header("Authorization") String token,
-            @Query("id") int idProyecto // Envía el ID como ?id=...
+            @Query("id") int idProyecto,
+            @Query("id_usuario") int idUsuario // <-- AÑADE ESTO
     );
 
     /**
@@ -93,6 +94,16 @@ public interface ApiService {
     Call<Postulacion> enviarPostulacion(
             @Header("Authorization") String token,
             @Body Postulacion nuevaPostulacion // Se envía como JSON
+    );
+
+    /**
+     * Obtiene los detalles completos de UNA postulación,
+     * incluyendo el Proyecto y el Contratista anidados.
+     */
+    @GET("getPostulacionDetalle.php")
+    Call<Postulacion> getPostulacionDetalle(
+            @Header("Authorization") String token,
+            @Query("id_postulacion") int idPostulacion
     );
 
     // ======================================================

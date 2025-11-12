@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat; // Importa ContextCompat
+import android.content.Intent; // <--- 1. IMPORTA INTENT
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hirelance.R;
@@ -78,7 +79,7 @@ public class PostulacionAdapter extends RecyclerView.Adapter<PostulacionAdapter.
     /**
      * ViewHolder para el item
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textTituloProyecto, textMontoOfertado, textEstadoPostulacion;
 
@@ -88,6 +89,21 @@ public class PostulacionAdapter extends RecyclerView.Adapter<PostulacionAdapter.
             textTituloProyecto = itemView.findViewById(R.id.textTituloProyecto);
             textMontoOfertado = itemView.findViewById(R.id.textMontoOfertado);
             textEstadoPostulacion = itemView.findViewById(R.id.textEstadoPostulacion);
+            // --- 3. ¡AÑADE ESTE LISTENER! ---
+            itemView.setOnClickListener(v -> {
+                // Obtenemos la postulación a la que se hizo clic
+                Postulacion postulacionClicada = listaPostulaciones.get(getAdapterPosition());
+
+                // Creamos un Intent para la nueva Activity
+                Intent intent = new Intent(context, DetallePostulacionActivity.class);
+
+                // Pasamos el ID de la postulación
+                // (Tu POJO Postulacion.java debe tener el getter getIdPostulacion())
+                intent.putExtra("ID_POSTULACION", postulacionClicada.getIdPostulacion());
+
+                // Iniciamos la Activity
+                context.startActivity(intent);
+            });
         }
     }
 

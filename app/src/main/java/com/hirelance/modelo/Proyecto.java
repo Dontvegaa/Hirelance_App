@@ -10,6 +10,9 @@ import java.util.Date;
  */
 public class Proyecto {
 
+    // El servidor nos dirá 'true' si el usuario actual ya se postuló
+    @SerializedName("ha_postulado")
+    private boolean haPostulado; // true si el usuario ya se postuló
     @SerializedName("id_proyecto")
     private int idProyecto;
 
@@ -52,6 +55,10 @@ public class Proyecto {
 
 
     // --- Getters y Setters ---
+
+    public boolean isHaPostulado() {
+        return haPostulado;
+    }
 
     public int getIdProyecto() {
         return idProyecto;

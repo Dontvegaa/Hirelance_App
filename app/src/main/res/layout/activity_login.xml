@@ -8,20 +8,17 @@
     tools:context=".controlador.LoginActivity">
 
     <!-- Un TextView simple como logo de "Hirelance" -->
-    <TextView
-        android:id="@+id/textLogo"
+    <ImageView
+        android:id="@+id/imgLogo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:layout_marginTop="100dp"
-        android:fontFamily="sans-serif-black"
-        android:text="HIRELANCE"
-        android:textColor="@color/hl_acento_naranja"
-        android:textSize="34sp"
+        android:src="@drawable/hirelance_logo"
+        android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Campo de Correo (Usando Material Design para mejor UI) -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutInputCorreo"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -36,7 +33,8 @@
         app:hintTextColor="@color/hl_acento_naranja"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textLogo">
+
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editCorreo"

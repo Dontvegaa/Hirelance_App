@@ -4,6 +4,10 @@ package com.hirelance.controlador;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import java.util.ArrayList;
+import com.hirelance.modelo.Universidad;
+import com.hirelance.controlador.UniversidadAdapter;
+
 import android.content.Intent; // <--- AÑADIDO
 import android.os.Bundle;
 import android.view.View;
@@ -45,6 +49,10 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
     private TextView textNombreCompleto, textCarrera, textCorreo, textDescripcionPerfil;
     private MaterialButton btnEditarPerfil;
     private RecyclerView recyclerHabilidades;
+
+    private RecyclerView recyclerUniversidades;
+    private UniversidadAdapter universidadAdapter;
+    private List<Universidad> listaUniversidades = new ArrayList<>();
 
     // Red y Sesión
     private ApiService apiService;
@@ -110,11 +118,14 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
         // 4. Configurar RecyclerView de Habilidades
         configurarRecyclerHabilidades();
 
+        // --- 2. LLAMA AL NUEVO METODO DE CONFIGURACIÓN ---
+        configurarRecyclerUniversidades();
+
         // 5. Cargar datos del perfil
         cargarDatosPerfil();
 
         // 6. Botón Editar (WIP)
-        // <--- MODIFICADO: Reemplazamos el Toast por la llamada al nuevo método
+        // <--- MODIFICADO: Reemplazamos el Toast por la llamada al nuevo metodo
         btnEditarPerfil.setOnClickListener(v -> {
             abrirPantallaEdicion();
         });
@@ -130,6 +141,15 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
         textDescripcionPerfil = findViewById(R.id.textDescripcionPerfil);
         btnEditarPerfil = findViewById(R.id.btnEditarPerfil);
         recyclerHabilidades = findViewById(R.id.recyclerHabilidades);
+        recyclerUniversidades = findViewById(R.id.recyclerUniversidades);
+    }
+
+    // --- 4. AÑADE ESTE NUEVO METODO ---
+    private void configurarRecyclerUniversidades() {
+        universidadAdapter = new UniversidadAdapter(listaUniversidades, this);
+        recyclerUniversidades.setLayoutManager(new LinearLayoutManager(this));
+        recyclerUniversidades.setNestedScrollingEnabled(false); // Para que el scroll sea fluido dentro del NestedScrollView
+        recyclerUniversidades.setAdapter(universidadAdapter);
     }
 
     private void configurarToolbar() {
@@ -225,6 +245,17 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
             imgFotoPerfil.setImageResource(R.drawable.ic_menu_perfil);
         }
 
+        // Llenar la lista de universidades
+        if (perfil.getUniversidades() != null && !perfil.getUniversidades().isEmpty()) {
+            listaUniversidades.clear();
+            listaUniversidades.addAll(perfil.getUniversidades());
+            universidadAdapter.notifyDataSetChanged(); // Actualizar el nuevo RecyclerView
+        } else {
+            // Opcional: ocultar la sección si no hay universidades
+            findViewById(R.id.labelEducacion).setVisibility(View.GONE);
+            recyclerUniversidades.setVisibility(View.GONE);
+        }
+
         // <--- AÑADIDO: Hacemos visible el botón solo después de cargar los datos
         btnEditarPerfil.setVisibility(View.VISIBLE);
     }
@@ -234,17 +265,22 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
      * Modificado para usar el LAUNCHER en lugar de startActivity.
      */
     private void abrirPantallaEdicion() {
-        if (perfilActual == null) {
-            Toast.makeText(this, "Aún cargando datos, intente de nuevo.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // --- ¡YA NO HACEMOS ESTO! ---
+        // if (perfilActual == null) {
+        //     Toast.makeText(this, "Aún cargando datos...", Toast.LENGTH_SHORT).show();
+        //     return;
+        // }
 
         Intent intent = new Intent(PerfilEstudianteActivity.this, EditarPerfilActivity.class);
-        intent.putExtra(EditarPerfilActivity.PERFIL_EXTRA, perfilActual);
 
-        // 9. ¡AQUÍ ESTÁ EL CAMBIO!
-        // En lugar de: startActivity(intent);
-        // Usamos nuestro launcher:
+        // --- ¡YA NO ENVIAMOS EL OBJETO GIGANTE! ---
+        // intent.putExtra(EditarPerfilActivity.PERFIL_EXTRA, perfilActual);
+
+        // --- SOLO ENVIAMOS EL ID ---
+        // (Asumiendo que tienes 'idUsuarioActual' guardado en esta activity)
+        intent.putExtra("ID_USUARIO", idUsuarioActual);
+
+        // Usamos el launcher que ya tienes
         editarPerfilLauncher.launch(intent);
     }
 }
