@@ -3,22 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_buscar_talento"
+        android:title="Buscar Talento"
+        android:icon="@drawable/ic_menu_buscar_talento"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_perfil"
         android:title="Mi Perfil"
         android:icon="@drawable/ic_menu_perfil"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_postulaciones"
-        android:icon="@drawable/ic_menu_postulaciones"
-        android:title="Mis Postulaciones"
+        android:id="@+id/menu_mis_proyectos"
+        android:title="Mis Proyectos"
+        android:icon="@drawable/ic_menu_mis_proyectos"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_salir"
         android:title="Cerrar Sesión"
         app:showAsAction="never" />
-
-
 
 </menu>

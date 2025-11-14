@@ -11,7 +11,7 @@ public class RetrofitClient {
 
     // IMPORTANTE: Reemplaza esta URL con la URL de tu API
     // Debe terminar en /
-    private static final String BASE_URL = "http://192.168.0.3/hirelance_api/";
+    private static final String BASE_URL = "https://notdev.online/hirelance_api/";
 
     private static Retrofit retrofit = null;
 

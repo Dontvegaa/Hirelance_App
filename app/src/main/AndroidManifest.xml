@@ -91,6 +91,18 @@
             android:name=".controlador.SelectorRegistroActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".controlador.MisProyectosContratistaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.BuscarTalentoActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.VerTalentoActivity"
+            android:exported="false" />
+
 
     </application>
 

@@ -104,9 +104,8 @@ public class ContratistaDashboardActivity extends AppCompatActivity {
     // (Necesitaremos crear 'contratista_menu.xml' después)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // getMenuInflater().inflate(R.menu.contratista_menu, menu);
-        // Por ahora, usamos el mismo menú de estudiante como placeholder
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        // Ya no usamos 'main_menu', usamos el nuevo menú del contratista
+        getMenuInflater().inflate(R.menu.contratista_menu, menu);
         return true;
     }
 
@@ -115,13 +114,29 @@ public class ContratistaDashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_perfil) {
-            // --- ¡ACTUALIZADO! ---
-            // Ya no es un Toast, abre la activity real
+            // Redirigir a MiPerfilContratistaActivity
             Intent intent = new Intent(this, MiPerfilContratistaActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.menu_mis_proyectos) {
+            // Redirigir a MisProyectosContratistaActivity
+            Intent intent = new Intent(this, MisProyectosContratistaActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.menu_buscar_talento) {
+            // --- ¡AÑADE ESTO! ---
+            // Redirigir a BuscarTalentoActivity
+            Intent intent = new Intent(this, BuscarTalentoActivity.class);
+            startActivity(intent);
+            return true;
         } else if (id == R.id.menu_salir) {
-            sessionManager.logoutUser();
+            // Cerrar sesión
+            new SessionManager(this).logoutUser();
+            finish();
+            // Opcional: Redirigir a LoginActivity si quieres
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(loginIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);

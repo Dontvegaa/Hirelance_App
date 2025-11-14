@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
         // --- ¡NUEVO! Configurar Toolbar ---
         setSupportActionBar(toolbarMain);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
         // Configurar RecyclerView
         configurarRecyclerView();
 

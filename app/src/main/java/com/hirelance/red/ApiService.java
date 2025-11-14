@@ -251,6 +251,27 @@ public interface ApiService {
     @POST("registerContratista.php")
     Call<Usuario> registerContratista(@Body RegisterContratistaDTO dto);
 
+    /**
+     * Obtiene una lista de todos los estudiantes (talento)
+     * para que el contratista los explore.
+     */
+    @GET("getTalentoEstudiantes.php")
+    Call<List<PerfilEstudiante>> getTalentoEstudiantes(
+            @Header("Authorization") String token
+            // (Opcional: @Query("busqueda") String busqueda)
+    );
+
+    // --- ¡NUEVO ENDPOINT DEDICADO PARA CONTRATISTAS! ---
+    /**
+     * Obtiene el perfil completo de un estudiante específico (Talento),
+     * solicitado por un contratista.
+     */
+    @GET("getPerfilTalento.php")
+    Call<PerfilEstudiante> getPerfilTalento(
+            @Header("Authorization") String token,
+            @Query("id_usuario") String idUsuario // <--- ¡CAMBIO CLAVE! A String
+    );
+
 
 
 }
