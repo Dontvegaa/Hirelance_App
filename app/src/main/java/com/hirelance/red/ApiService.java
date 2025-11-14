@@ -6,6 +6,7 @@ import com.hirelance.modelo.DetallePostulante;
 import com.hirelance.modelo.LoginResponse;
 import com.hirelance.modelo.Postulacion; // <-- Importado
 import com.hirelance.modelo.Proyecto;
+import com.hirelance.modelo.Universidad;
 import com.hirelance.modelo.Usuario;
 import com.hirelance.modelo.PerfilEstudiante; // <-- ¡NUEVO IMPORT!
 
@@ -210,6 +211,15 @@ public interface ApiService {
     Call<Proyecto> publicarProyecto( // Devuelve el proyecto creado
                                      @Header("Authorization") String token,
                                      @Body Proyecto nuevoProyecto
+    );
+
+    /**
+     * Obtiene la lista de TODAS las universidades
+     * para poblar el spinner de "Añadir Educación".
+     */
+    @GET("getUniversidades.php")
+    Call<List<Universidad>> getUniversidades(
+            @Header("Authorization") String token
     );
 
 

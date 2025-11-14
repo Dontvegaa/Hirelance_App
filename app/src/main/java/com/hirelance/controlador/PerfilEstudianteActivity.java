@@ -277,7 +277,7 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
         // intent.putExtra(EditarPerfilActivity.PERFIL_EXTRA, perfilActual);
 
         // --- SOLO ENVIAMOS EL ID ---
-        // (Asumiendo que tienes 'idUsuarioActual' guardado en esta activity)
+        // (Asumimos que tienes 'idUsuarioActual' guardado en esta activity)
         intent.putExtra("ID_USUARIO", idUsuarioActual);
 
         // Usamos el launcher que ya tienes

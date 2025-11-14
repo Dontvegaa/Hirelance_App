@@ -1,89 +1,99 @@
 package com.hirelance.controlador;
 
-import androidx.recyclerview.widget.LinearLayoutManager; // <-- AÑADIR
-import androidx.recyclerview.widget.RecyclerView; // <-- AÑADIR
-import com.hirelance.modelo.Habilidad; // <-- AÑADIR
-import java.util.ArrayList; // <-- AÑADIR
-import java.util.List; // <-- AÑADIR
-
+// (Android Imports)
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.TextUtils; // <--- 1. Importa TextUtils
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.content.DialogInterface; // <-- Añadir si falta
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.hirelance.modelo.Usuario; // Asegúrate de importar Usuario
+// (Material Design Imports)
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.hirelance.R;
-import com.hirelance.modelo.PerfilEstudiante;
-import com.hirelance.red.ApiService; // <--- 2. Importa ApiService
-import com.hirelance.red.RetrofitClient; // <--- 3. Importa RetrofitClient
-import com.hirelance.util.SessionManager; // <--- 4. Importa SessionManager
 
+// (App Imports)
+import com.hirelance.R;
+import com.hirelance.modelo.Habilidad;
+import com.hirelance.modelo.PerfilEstudiante;
+import com.hirelance.modelo.Universidad;
+import com.hirelance.modelo.Usuario;
+import com.hirelance.red.ApiService;
+import com.hirelance.red.RetrofitClient;
+import com.hirelance.util.SessionManager;
+
+// (Java Util Imports)
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import retrofit2.Call; // <--- 5. Importa Call, Callback y Response
+// (Retrofit Imports)
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-// --- 1. IMPLEMENTA LA INTERFAZ DEL ADAPTADOR ---
-public class EditarPerfilActivity extends AppCompatActivity implements HabilidadEditableAdapter.OnHabilidadListener {
+public class EditarPerfilActivity extends AppCompatActivity
+        implements HabilidadEditableAdapter.OnHabilidadListener,
+        UniversidadEditableAdapter.OnUniversidadListener {
 
     // Vistas
     private MaterialToolbar toolbar;
     private ProgressBar progressBar;
     private ImageView imgEditarFotoPreview;
     private MaterialButton btnCambiarFoto, btnGuardarCambios;
-    private TextInputEditText etCarrera, etAnioCarrera, etPortafolio, etDescripcion;
-    private TextInputEditText etCorreo, etContrasena; // <-- Nuevos campos
-
-    // --- 2. AÑADE LAS NUEVAS VISTAS DE HABILIDADES ---
+    private TextInputEditText etCarrera, etAnioCarrera, etPortafolio, etDescripcion, etCorreo, etContrasena;
     private RecyclerView recyclerHabilidadesEdit;
     private TextInputEditText etNuevaHabilidad;
     private MaterialButton btnAnadirHabilidad;
+    private RecyclerView recyclerUniversidadesEdit;
+    private AutoCompleteTextView actvNuevaUniversidad;
+    private MaterialButton btnAnadirUniversidad;
 
-    // --- 3. ADAPTADOR Y LISTA PARA HABILIDADES ---
+    // Adaptadores y Listas
     private HabilidadEditableAdapter habilidadAdapter;
     private List<Habilidad> listaHabilidades = new ArrayList<>();
+    private UniversidadEditableAdapter universidadAdapter;
+    private List<Universidad> listaUniversidadesEstudiante = new ArrayList<>();
+    private HashMap<String, Universidad> mapaUniversidades = new HashMap<>();
+    private List<String> nombresUniversidades = new ArrayList<>();
 
     // Datos
-    private PerfilEstudiante perfilActual; // Esto se llenará con la API
-    private int idUsuarioActual; // Recibiremos esto del Intent
-
-    // Red y Sesión  <--- 6. Añade estas variables
+    private PerfilEstudiante perfilActual;
+    private int idUsuarioActual;
     private ApiService apiService;
     private SessionManager sessionManager;
     private String tokenActual;
-
-    // --- 3. PARA LA IMAGEN ---
     private ActivityResultLauncher<String> galleryLauncher;
-    private String fotoPerfilBase64 = null; // Guardará la *nueva* foto seleccionada
+    private String fotoPerfilBase64 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil);
 
-        // 7. Inicializar API y Sesión
+        // 1. Configurar API y Sesión
         apiService = RetrofitClient.getClient().create(ApiService.class);
         sessionManager = new SessionManager(getApplicationContext());
         tokenActual = sessionManager.getToken();
@@ -97,43 +107,85 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
             return;
         }
 
-        // 1. Vincular Vistas
+        // 3. Configurar todo
         vincularVistas();
-
-        // 2. Configurar Toolbar
         configurarToolbar();
-
-        configurarGalleryLauncher(); // <-- 4. Configura el launcher
-
-        // --- 4. CONFIGURA EL NUEVO RECYCLERVIEW ---
+        configurarGalleryLauncher();
         configurarRecyclerHabilidades();
+        configurarRecyclerUniversidades();
 
-        cargarDatosDelPerfil(); // Esto llamará a pintarDatos()
+        // 4. Cargar datos
+        cargarDatosDelPerfil();
+        cargarListaDeUniversidades();
 
-        // --- 5. LISTENERS DE BOTONES (Añadir el de Habilidad) ---
+        // 5. Listeners
         btnGuardarCambios.setOnClickListener(v -> guardarCambios());
         btnCambiarFoto.setOnClickListener(v -> abrirGaleria());
         btnAnadirHabilidad.setOnClickListener(v -> anadirHabilidad());
+        btnAnadirUniversidad.setOnClickListener(v -> anadirUniversidad());
     }
 
-    // --- 6. ¡NUEVO MÉTODO PARA CARGAR DATOS! ---
+    private void vincularVistas() {
+        toolbar = findViewById(R.id.toolbarEditarPerfil);
+        progressBar = findViewById(R.id.progressBarEditarPerfil);
+        btnGuardarCambios = findViewById(R.id.btnGuardarCambios);
+        imgEditarFotoPreview = findViewById(R.id.imgEditarFotoPreview);
+        btnCambiarFoto = findViewById(R.id.btnCambiarFoto);
+        etCarrera = findViewById(R.id.etCarrera);
+        etAnioCarrera = findViewById(R.id.etAnioCarrera);
+        etPortafolio = findViewById(R.id.etPortafolio);
+        etDescripcion = findViewById(R.id.etDescripcion);
+        etCorreo = findViewById(R.id.etCorreo);
+        etContrasena = findViewById(R.id.etContrasena);
+
+        // Habilidades
+        recyclerHabilidadesEdit = findViewById(R.id.recyclerHabilidadesEdit);
+        etNuevaHabilidad = findViewById(R.id.etNuevaHabilidad);
+        btnAnadirHabilidad = findViewById(R.id.btnAnadirHabilidad);
+
+        // --- ¡VÍNCULOS CORREGIDOS! ---
+        recyclerUniversidadesEdit = findViewById(R.id.recyclerUniversidadesEdit);
+        actvNuevaUniversidad = findViewById(R.id.actvNuevaUniversidad);
+        btnAnadirUniversidad = findViewById(R.id.btnAnadirUniversidad);
+    }
+
+    private void configurarToolbar() {
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(v -> finish());
+    }
+
+    private void configurarRecyclerHabilidades() {
+        habilidadAdapter = new HabilidadEditableAdapter(listaHabilidades, this, this);
+        recyclerHabilidadesEdit.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerHabilidadesEdit.setAdapter(habilidadAdapter);
+    }
+
+    private void configurarRecyclerUniversidades() {
+        universidadAdapter = new UniversidadEditableAdapter(listaUniversidadesEstudiante, this, this);
+        recyclerUniversidadesEdit.setLayoutManager(new LinearLayoutManager(this));
+        recyclerUniversidadesEdit.setNestedScrollingEnabled(false);
+        recyclerUniversidadesEdit.setAdapter(universidadAdapter);
+    }
+
     private void cargarDatosDelPerfil() {
         mostrarCarga(true);
-
         Call<PerfilEstudiante> call = apiService.getMiPerfil(tokenActual, idUsuarioActual);
         call.enqueue(new Callback<PerfilEstudiante>() {
             @Override
             public void onResponse(Call<PerfilEstudiante> call, Response<PerfilEstudiante> response) {
                 mostrarCarga(false);
                 if (response.isSuccessful() && response.body() != null) {
-                    perfilActual = response.body(); // Guardamos el perfil cargado
-                    pintarDatos(); // Llamamos a pintarDatos
+                    perfilActual = response.body();
+                    pintarDatos();
                 } else {
                     Toast.makeText(EditarPerfilActivity.this, "Error al cargar el perfil", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
-
             @Override
             public void onFailure(Call<PerfilEstudiante> call, Throwable t) {
                 mostrarCarga(false);
@@ -143,149 +195,132 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
         });
     }
 
-    private void vincularVistas() {
-        toolbar = findViewById(R.id.toolbarEditarPerfil);
-        progressBar = findViewById(R.id.progressBarEditarPerfil);
-        btnGuardarCambios = findViewById(R.id.btnGuardarCambios);
-
-        // Vistas de Foto
-        imgEditarFotoPreview = findViewById(R.id.imgEditarFotoPreview);
-        btnCambiarFoto = findViewById(R.id.btnCambiarFoto);
-
-        // Vistas de Perfil
-        etCarrera = findViewById(R.id.etCarrera);
-        etAnioCarrera = findViewById(R.id.etAnioCarrera);
-        etPortafolio = findViewById(R.id.etPortafolio);
-        etDescripcion = findViewById(R.id.etDescripcion);
-
-        // Vistas de Cuenta
-        etCorreo = findViewById(R.id.etCorreo);
-        etContrasena = findViewById(R.id.etContrasena);
-
-        // --- 6. VINCULA LAS NUEVAS VISTAS ---
-        recyclerHabilidadesEdit = findViewById(R.id.recyclerHabilidadesEdit);
-        etNuevaHabilidad = findViewById(R.id.etNuevaHabilidad);
-        btnAnadirHabilidad = findViewById(R.id.btnAnadirHabilidad);
-    }
-
-    private void configurarToolbar() {
-        setSupportActionBar(toolbar);
-        // Añadir flecha de "Atrás"
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-        // Listener para la flecha de "Atrás"
-        toolbar.setNavigationOnClickListener(v -> finish());
-    }
-
-    // --- 7. AÑADE ESTE MÉTODO ---
-    private void configurarRecyclerHabilidades() {
-        // 'this' funciona porque la Activity ahora implementa OnHabilidadListener
-        habilidadAdapter = new HabilidadEditableAdapter(listaHabilidades, this, this);
-        recyclerHabilidadesEdit.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerHabilidadesEdit.setAdapter(habilidadAdapter);
+    private void cargarListaDeUniversidades() {
+        Call<List<Universidad>> call = apiService.getUniversidades(tokenActual);
+        call.enqueue(new Callback<List<Universidad>>() {
+            @Override
+            public void onResponse(Call<List<Universidad>> call, Response<List<Universidad>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    mapaUniversidades.clear();
+                    nombresUniversidades.clear();
+                    for (Universidad uni : response.body()) {
+                        nombresUniversidades.add(uni.getNombre());
+                        mapaUniversidades.put(uni.getNombre(), uni);
+                    }
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            EditarPerfilActivity.this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            nombresUniversidades
+                    );
+                    actvNuevaUniversidad.setAdapter(adapter);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Universidad>> call, Throwable t) {
+                Toast.makeText(EditarPerfilActivity.this, "Error al cargar lista de universidades", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void pintarDatos() {
-        if (perfilActual == null) return; // Seguridad
+        if (perfilActual == null) return;
 
-        // Pintar foto actual
         String fotoBase64Actual = perfilActual.getFotoPerfil();
         if (fotoBase64Actual != null && !fotoBase64Actual.isEmpty()) {
             try {
                 byte[] decodedString = Base64.decode(fotoBase64Actual, Base64.DEFAULT);
                 Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 imgEditarFotoPreview.setImageBitmap(decodedByte);
-            } catch (Exception e) {
-                imgEditarFotoPreview.setImageResource(R.drawable.ic_menu_perfil);
-            }
+            } catch (Exception e) { imgEditarFotoPreview.setImageResource(R.drawable.ic_menu_perfil); }
         }
 
-        // Pintar campos de perfil
         etCarrera.setText(perfilActual.getCarrera());
         etAnioCarrera.setText(String.valueOf(perfilActual.getAnioCarrera()));
         etPortafolio.setText(perfilActual.getPortafolioUrl());
         etDescripcion.setText(perfilActual.getDescripcion());
 
-        // Pintar campos de cuenta
         if (perfilActual.getUsuario() != null) {
             etCorreo.setText(perfilActual.getUsuario().getCorreo());
         }
 
-        // --- 8. PINTAR LA LISTA DE HABILIDADES ---
         if (perfilActual.getHabilidades() != null) {
             listaHabilidades.clear();
             listaHabilidades.addAll(perfilActual.getHabilidades());
             habilidadAdapter.notifyDataSetChanged();
         }
+
+        if (perfilActual.getUniversidades() != null) {
+            listaUniversidadesEstudiante.clear();
+            listaUniversidadesEstudiante.addAll(perfilActual.getUniversidades());
+            universidadAdapter.notifyDataSetChanged();
+        }
     }
 
-    // --- 9. AÑADE LA LÓGICA PARA LOS BOTONES DE HABILIDAD ---
-
-    /**
-     * Se llama cuando el usuario presiona el botón '+'
-     */
     private void anadirHabilidad() {
         String tituloHabilidad = etNuevaHabilidad.getText().toString().trim();
         if (tituloHabilidad.isEmpty()) {
             Toast.makeText(this, "Escribe una habilidad", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Creamos un objeto Habilidad temporal
         Habilidad nuevaHabilidad = new Habilidad();
         nuevaHabilidad.setTitulo(tituloHabilidad);
-
-        // Lo añadimos a la lista local y notificamos al adaptador
         listaHabilidades.add(nuevaHabilidad);
         habilidadAdapter.notifyItemInserted(listaHabilidades.size() - 1);
-
-        // Limpiamos el campo de texto
         etNuevaHabilidad.setText("");
     }
 
-    /**
-     * Este es el metodo de la interfaz OnHabilidadListener.
-     * Se llama cuando el usuario presiona la 'X' en un chip.
-     */
     @Override
     public void onHabilidadEliminarClick(int position) {
-        // Eliminamos la habilidad de la lista local
         listaHabilidades.remove(position);
-        // Notificamos al adaptador
         habilidadAdapter.notifyItemRemoved(position);
         habilidadAdapter.notifyItemRangeChanged(position, listaHabilidades.size());
     }
 
+    private void anadirUniversidad() {
+        String nombreUni = actvNuevaUniversidad.getText().toString();
+        if (nombreUni.isEmpty() || !mapaUniversidades.containsKey(nombreUni)) {
+            Toast.makeText(this, "Selecciona una universidad válida de la lista", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-    /**
-     * Valida los campos y envía la actualización a la API.
-     */
-    // --- 'guardarCambios()' AHORA TIENE UNA PEQUEÑA MODIFICACIÓN ---
+        Universidad uniSeleccionada = mapaUniversidades.get(nombreUni);
+
+        for(Universidad uni : listaUniversidadesEstudiante) {
+            if(uni.getIdUniversidad() == uniSeleccionada.getIdUniversidad()) {
+                Toast.makeText(this, "Esa universidad ya está en tu lista", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        listaUniversidadesEstudiante.add(uniSeleccionada);
+        universidadAdapter.notifyItemInserted(listaUniversidadesEstudiante.size() - 1);
+        actvNuevaUniversidad.setText("", false);
+    }
+
+    @Override
+    public void onUniversidadEliminarClick(int position) {
+        listaUniversidadesEstudiante.remove(position);
+        universidadAdapter.notifyItemRemoved(position);
+        universidadAdapter.notifyItemRangeChanged(position, listaUniversidadesEstudiante.size());
+    }
+
     private void guardarCambios() {
-        // ... (Tu validación de campos)
         String carrera = etCarrera.getText().toString().trim();
         String anioStr = etAnioCarrera.getText().toString().trim();
         String portafolio = etPortafolio.getText().toString().trim();
         String descripcion = etDescripcion.getText().toString().trim();
         String correo = etCorreo.getText().toString().trim();
         String contrasena = etContrasena.getText().toString().trim();
-
-        // ... (Validación de número de año)
         int anioCarrera = 0;
         try { anioCarrera = Integer.parseInt(anioStr); } catch (NumberFormatException e) { /* ... */ }
 
-        // Actualizar el objeto perfilActual
         perfilActual.setCarrera(carrera);
         perfilActual.setAnioCarrera(anioCarrera);
         perfilActual.setPortafolioUrl(portafolio);
         perfilActual.setDescripcion(descripcion);
-
         if (fotoPerfilBase64 != null) {
             perfilActual.setFotoPerfil(fotoPerfilBase64);
         }
-
         if (perfilActual.getUsuario() == null) {
             perfilActual.setUsuario(new Usuario());
         }
@@ -296,25 +331,18 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
             perfilActual.getUsuario().setContrasena(null);
         }
         perfilActual.setIdUsuario(idUsuarioActual);
-
-        // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
-        // Actualizamos la lista de habilidades en el objeto 'perfilActual'
-        // antes de enviarlo a la API.
         perfilActual.setHabilidades(this.listaHabilidades);
+        perfilActual.setUniversidades(this.listaUniversidadesEstudiante);
 
-        // 11. Llamar a la API
         mostrarCarga(true);
-
         Call<PerfilEstudiante> call = apiService.actualizarMiPerfil(tokenActual, perfilActual);
         call.enqueue(new Callback<PerfilEstudiante>() {
             @Override
             public void onResponse(Call<PerfilEstudiante> call, Response<PerfilEstudiante> response) {
                 mostrarCarga(false);
-                // --- ¡CORREGIDO! ---
-                // El PHP solo devuelve un mensaje, no el objeto completo
                 if (response.isSuccessful()) {
                     Toast.makeText(EditarPerfilActivity.this, "Perfil actualizado con éxito", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK); // Avisa a PerfilEstudianteActivity que recargue
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     String errorMsg = "Error al actualizar. Código: " + response.code();
@@ -324,7 +352,6 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
                     mostrarErrorDialog("Error del Servidor", errorMsg);
                 }
             }
-
             @Override
             public void onFailure(Call<PerfilEstudiante> call, Throwable t) {
                 mostrarCarga(false);
@@ -333,9 +360,6 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
         });
     }
 
-    /**
-     * Muestra u oculta el ProgressBar y habilita/deshabilita el botón.
-     */
     private void mostrarCarga(boolean cargando) {
         progressBar.setVisibility(cargando ? View.VISIBLE : View.GONE);
         btnGuardarCambios.setEnabled(!cargando);
@@ -348,8 +372,8 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
                     if (uri != null) {
                         try {
                             Bitmap bitmap = uriToBitmap(uri);
-                            imgEditarFotoPreview.setImageBitmap(bitmap); // Poner la preview
-                            fotoPerfilBase64 = bitmapToBase64(bitmap); // Guardar el Base64
+                            imgEditarFotoPreview.setImageBitmap(bitmap);
+                            fotoPerfilBase64 = bitmapToBase64(bitmap);
                             Log.d("EditarPerfil", "Nueva foto seleccionada y convertida a Base64.");
                         } catch (IOException e) {
                             Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show();
@@ -360,6 +384,7 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
     }
 
     private void abrirGaleria() { galleryLauncher.launch("image/*"); }
+
     private Bitmap uriToBitmap(Uri uri) throws IOException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             ImageDecoder.Source source = ImageDecoder.createSource(this.getContentResolver(), uri);
@@ -384,6 +409,4 @@ public class EditarPerfilActivity extends AppCompatActivity implements Habilidad
                 .setIcon(R.drawable.ic_menu_perfil)
                 .show();
     }
-
-
 }
