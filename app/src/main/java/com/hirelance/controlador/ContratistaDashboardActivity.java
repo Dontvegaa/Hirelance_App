@@ -115,14 +115,15 @@ public class ContratistaDashboardActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_perfil) {
-            // (WIP) Abrir el PerfilContratistaActivity
-            Toast.makeText(this, "WIP: Abriendo perfil contratista", Toast.LENGTH_SHORT).show();
+            // --- ¡ACTUALIZADO! ---
+            // Ya no es un Toast, abre la activity real
+            Intent intent = new Intent(this, MiPerfilContratistaActivity.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.menu_salir) {
             sessionManager.logoutUser();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -75,6 +75,14 @@
             android:name=".controlador.PublicarProyectoActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".controlador.MiPerfilContratistaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.EditarPerfilContratistaActivity"
+            android:exported="false" />
+
 
     </application>
 

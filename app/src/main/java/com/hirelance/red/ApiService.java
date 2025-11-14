@@ -4,6 +4,7 @@ package com.hirelance.red;
 import com.hirelance.modelo.Categoria;
 import com.hirelance.modelo.DetallePostulante;
 import com.hirelance.modelo.LoginResponse;
+import com.hirelance.modelo.PerfilContratista;
 import com.hirelance.modelo.Postulacion; // <-- Importado
 import com.hirelance.modelo.Proyecto;
 import com.hirelance.modelo.Universidad;
@@ -220,6 +221,25 @@ public interface ApiService {
     @GET("getUniversidades.php")
     Call<List<Universidad>> getUniversidades(
             @Header("Authorization") String token
+    );
+
+    /**
+     * Obtiene el perfil de empresa del contratista logueado.
+     */
+    @GET("getMiPerfilContratista.php")
+    Call<PerfilContratista> getMiPerfilContratista(
+            @Header("Authorization") String token,
+            @Query("id_usuario") int idUsuario
+    );
+
+    /**
+     * Actualiza el perfil de empresa del contratista.
+     * Envía el objeto PerfilContratista completo.
+     */
+    @PUT("actualizarMiPerfilContratista.php")
+    Call<PerfilContratista> actualizarMiPerfilContratista(
+            @Header("Authorization") String token,
+            @Body PerfilContratista perfil
     );
 
 

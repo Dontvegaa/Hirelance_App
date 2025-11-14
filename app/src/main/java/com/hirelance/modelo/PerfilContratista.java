@@ -29,6 +29,10 @@ public class PerfilContratista {
     @SerializedName("usuario")
     private Usuario usuario;
 
+    // --- ¡AÑADE ESTE CAMPO! ---
+    @SerializedName("logo_empresa")
+    private String logoBase64;
+
     // Constructor vacío requerido por Gson
     public PerfilContratista() {
     }
@@ -97,4 +101,14 @@ public class PerfilContratista {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    // --- ¡AÑADE ESTE GETTER Y SETTER! ---
+    public String getLogoBase64() {
+        return logoBase64;
+    }
+
+    public void setLogoBase64(String logoBase64) {
+        this.logoBase64 = logoBase64;
+    }
+
 }
