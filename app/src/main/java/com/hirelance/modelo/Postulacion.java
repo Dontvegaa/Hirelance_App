@@ -37,6 +37,9 @@ public class Postulacion implements Serializable {
     @SerializedName("proyecto")
     private Proyecto proyecto;
 
+    @SerializedName("estudiante")
+    private PerfilEstudiante estudiante;
+
     // Constructor para ENVIAR una nueva postulación a la API
     public Postulacion(int idProyecto, int idEstudiante, String propuesta, double montoOfertado, String tiempoEstimado) {
         this.idProyecto = idProyecto;
@@ -86,9 +89,20 @@ public class Postulacion implements Serializable {
         this.fechaPostulacion = fechaPostulacion;
     }
 
+    public PerfilEstudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(PerfilEstudiante estudiante) {
+        this.estudiante = estudiante;
+    }
+
+
+
+
+
     public String getEstado() {
         return estado;
     }
 
-    // (Asegúrate de tener todos los demás getters y setters si los necesitas)
 }

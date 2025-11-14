@@ -1,17 +1,23 @@
 package com.hirelance.util;
 
 import android.content.Context;
+import android.content.Intent; // <-- 1. IMPORTA INTENT
 import android.content.SharedPreferences;
+
+import com.hirelance.controlador.LoginActivity; // <-- 2. IMPORTA LOGINACTIVITY
 
 /**
  * Clase de utilidad para gestionar los datos de sesión del usuario
- * (Token y ID) usando SharedPreferences.
+ * (Token, ID y Tipo) usando SharedPreferences.
  */
 public class SessionManager {
 
     private static final String PREF_NAME = "HirelanceSession";
     private static final String KEY_TOKEN = "api_token";
     private static final String KEY_USER_ID = "user_id";
+    private static final String KEY_USER_TYPE = "user_type"; // <-- 3. NUEVA CLAVE
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn"; // <-- 4. NUEVA CLAVE (Opcional pero recomendada)
+
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
@@ -28,11 +34,15 @@ public class SessionManager {
      * Guarda la sesión del usuario después del login.
      * @param token El token JWT recibido de la API.
      * @param userId El ID del usuario.
+     * @param userType El tipo de usuario (ej: "estudiante", "contratista").
      */
-    public void saveSession(String token, int userId) {
+    // --- 5. MÉTODO ACTUALIZADO ---
+    public void saveSession(String token, int userId, String userType) {
+        editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_TOKEN, token);
         editor.putInt(KEY_USER_ID, userId);
-        editor.apply();
+        editor.putString(KEY_USER_TYPE, userType); // <-- 6. AÑADIDO
+        editor.apply(); // 'apply()' es más eficiente que 'commit()'
     }
 
     /**
@@ -52,6 +62,15 @@ public class SessionManager {
     }
 
     /**
+     * Obtiene el TIPO de usuario guardado.
+     * @return El tipo de usuario, o null si no hay ninguno.
+     */
+    // --- 7. NUEVO MÉTODO ---
+    public String getUserType() {
+        return prefs.getString(KEY_USER_TYPE, null);
+    }
+
+    /**
      * Borra todos los datos de la sesión (para el logout).
      */
     public void clearSession() {
@@ -60,9 +79,26 @@ public class SessionManager {
     }
 
     /**
-     * Comprueba si el usuario está logueado (si existe un token).
+     * Comprueba si el usuario está logueado.
      */
     public boolean isLoggedIn() {
-        return getToken() != null;
+        // Ahora usamos la clave booleana que es más confiable
+        return prefs.getBoolean(KEY_IS_LOGGED_IN, false);
+    }
+
+    /**
+     * Limpia todos los datos de la sesión y redirige al Login.
+     * (Usado en tu MainActivity.java)
+     */
+    // --- 8. NUEVO MÉTODO (Mejorado) ---
+    public void logoutUser() {
+        // 1. Limpiar todos los datos
+        clearSession();
+
+        // 2. Redirigir a LoginActivity
+        Intent i = new Intent(context, LoginActivity.class);
+        // Añadir flags para limpiar el historial de activities
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
     }
 }

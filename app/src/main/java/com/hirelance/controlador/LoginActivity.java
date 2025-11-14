@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.IOException; // <--- 1. IMPORTA ESTO
+import com.hirelance.modelo.Usuario; // <-- Asegúrate de importar Usuario
+import java.io.IOException; // <-- Asegúrate de importar IOException
 
 import com.hirelance.util.SessionManager;
 
@@ -53,10 +55,20 @@ public class LoginActivity extends AppCompatActivity {
         // 2. ¡AÑADIR! Inicializar SessionManager
         sessionManager = new SessionManager(getApplicationContext());
 
-        // 3. ¡AÑADIR! Comprobar si ya hay una sesión iniciada
+        // --- LÓGICA DE REDIRECCIÓN EN EL INICIO ---
+        // Si el usuario ya está logueado, lo mandamos al dashboard correcto
         if (sessionManager.isLoggedIn()) {
-            irAMainActivity();
-            return; // Evita mostrar el login si ya está logueado
+            String tipoUsuario = sessionManager.getUserType();
+
+            // Comprobamos el tipo de usuario guardado
+            if ("contratista".equals(tipoUsuario)) {
+                irAContratistaDashboard();
+            } else {
+                // "estudiante" o cualquier otro caso
+                irAMainActivity();
+            }
+            finish(); // Cierra LoginActivity
+            return; // Detenemos la ejecución de onCreate
         }
 
         // 4. Vincular las Vistas del XML
@@ -128,35 +140,37 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     // ¡Éxito! El servidor nos devolvió 200 (OK) y un cuerpo
                     LoginResponse loginResponse = response.body();
+                    Usuario usuario = loginResponse.getUsuario(); // Obtenemos el usuario
 
-                    // (Futuro): Aquí guardaríamos el token y los datos del usuario
+                    /// 1. Obtener todos los datos de la sesión
                     String token = loginResponse.getToken();
-                    int userId = loginResponse.getUsuario().getIdUsuario();
-                    sessionManager.saveSession(token, userId);
+                    int userId = usuario.getIdUsuario();
+                    String userType = usuario.getTipo(); // <-- ¡NUEVO! Leemos el tipo
 
-                    // Mostramos un mensaje de bienvenida
-                    String nombreUsuario = loginResponse.getUsuario().getNombre();
-                    String bienvenida = getString(R.string.bienvenida_usuario, nombreUsuario);
+                    // 2. Guardar la sesión COMPLETA
+                    sessionManager.saveSession(token, userId, userType);
+
+                    // 3. Mostrar bienvenida
+                    String bienvenida = getString(R.string.bienvenida_usuario, usuario.getNombre());
                     Toast.makeText(LoginActivity.this, bienvenida, Toast.LENGTH_LONG).show();
 
-                    // Navegamos a la pantalla principal de la app (ej. MainActivity)
-                    irAMainActivity();
-
-                } else {
-                    // Error del servidor (ej. 401 - No autorizado, 404 - No encontrado)
-                    // (El correo o contraseña son incorrectos)
-                    String errorBody = "Error desconocido en la respuesta";
-                    if (response.errorBody() != null) {
-                        try {
-                            // Leemos el JSON de error que nos manda el PHP
-                            errorBody = response.errorBody().string();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    // 4. --- ¡LÓGICA DE REDIRECCIÓN! ---
+                    if ("contratista".equals(userType)) {
+                        irAContratistaDashboard();
+                    } else {
+                        // Por defecto, (estudiante o admin) va al dashboard de estudiante
+                        irAMainActivity();
                     }
 
-                    // Mostramos el error real en un Toast largo
-                    Toast.makeText(LoginActivity.this, "Error: " + errorBody, Toast.LENGTH_LONG).show();
+                } else {
+                    // Error del servidor (401, etc.)
+                    String errorMsg = "Error al iniciar sesión.";
+                    if(response.errorBody() != null) {
+                        try {
+                            errorMsg = response.errorBody().string();
+                        } catch (IOException e) { e.printStackTrace(); }
+                    }
+                    Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -176,6 +190,14 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Error (onFailure): " + errorMessage, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void irAContratistaDashboard() {
+        // --- ¡CORREGIDO! ---
+        // Ya no es un Toast, ahora es un Intent real
+        Intent intent = new Intent(LoginActivity.this, ContratistaDashboardActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     /**

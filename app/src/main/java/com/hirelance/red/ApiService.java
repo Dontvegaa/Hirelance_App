@@ -1,6 +1,8 @@
 package com.hirelance.red;
 
 // Imports de Modelos
+import com.hirelance.modelo.Categoria;
+import com.hirelance.modelo.DetallePostulante;
 import com.hirelance.modelo.LoginResponse;
 import com.hirelance.modelo.Postulacion; // <-- Importado
 import com.hirelance.modelo.Proyecto;
@@ -21,6 +23,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import com.hirelance.modelo.ContratistaStats; // <-- 1. IMPORTA EL NUEVO POJO
 import com.hirelance.modelo.RegisterEstudianteDTO;
 
 /**
@@ -140,6 +143,75 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Query("id_usuario") int idUsuario // Envía el ID del usuario
     );
+
+    /**
+     * Obtiene las estadísticas (tarjetas) para el dashboard del contratista.
+     */
+    @GET("getContratistaStats.php")
+    Call<ContratistaStats> getContratistaStats(
+            @Header("Authorization") String token,
+            @Query("id_contratista") int idContratista
+    );
+
+    /**
+     * Obtiene los proyectos recientes publicados por el contratista.
+     */
+    @GET("getMisProyectosContratista.php")
+    Call<List<Proyecto>> getMisProyectosContratista(
+            @Header("Authorization") String token,
+            @Query("id_contratista") int idContratista
+    );
+
+    /**
+     * Obtiene la lista de postulaciones (y los perfiles de los estudiantes)
+     * para un proyecto específico.
+     */
+    @GET("getPostulacionesPorProyecto.php")
+    Call<List<Postulacion>> getPostulacionesPorProyecto(
+            @Header("Authorization") String token,
+            @Query("id_proyecto") int idProyecto
+    );
+
+    /**
+     * Obtiene el perfil completo de un estudiante Y los detalles
+     * de su postulación específica.
+     */
+    @GET("getDetallePostulante.php")
+    Call<DetallePostulante> getDetallePostulante(
+            @Header("Authorization") String token,
+            @Query("id_postulacion") int idPostulacion
+    );
+
+    /**
+     * Acepta o rechaza una postulación.
+     */
+    @FormUrlEncoded
+    @POST("actualizarEstadoPostulacion.php")
+    Call<Void> actualizarEstadoPostulacion( // Usamos Call<Void> porque no esperamos respuesta
+                                            @Header("Authorization") String token,
+                                            @Field("id_postulacion") int idPostulacion,
+                                            @Field("nuevo_estado") String nuevoEstado // "aceptada" o "rechazada"
+    );
+
+    /**
+     * Obtiene la lista de todas las categorías de proyectos
+     * para poblar el spinner.
+     */
+    @GET("getCategorias.php")
+    Call<List<Categoria>> getCategorias(
+            @Header("Authorization") String token
+    );
+
+    /**
+     * Publica un nuevo proyecto.
+     * Envía el objeto Proyecto como un JSON.
+     */
+    @POST("publicarProyecto.php")
+    Call<Proyecto> publicarProyecto( // Devuelve el proyecto creado
+                                     @Header("Authorization") String token,
+                                     @Body Proyecto nuevoProyecto
+    );
+
 
 
 }

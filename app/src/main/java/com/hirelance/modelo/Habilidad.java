@@ -1,5 +1,5 @@
 package com.hirelance.modelo;
-import java.io.Serializable; // <--- 1. Importa esto
+import java.io.Serializable;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -17,7 +17,13 @@ public class Habilidad implements Serializable {
     @SerializedName("descripcion")
     private String descripcion;
 
-    // --- Constructor ---
+    // --- ¡AÑADE ESTE CONSTRUCTOR VACÍO! ---
+    public Habilidad() {
+        // Constructor vacío requerido por GSON y para
+        // crear nuevas instancias en la app.
+    }
+
+    // --- TU CONSTRUCTOR EXISTENTE ---
     public Habilidad(String titulo, String descripcion) {
         this.titulo = titulo;
         this.descripcion = descripcion;

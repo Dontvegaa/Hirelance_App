@@ -1,5 +1,11 @@
 package com.hirelance.controlador;
 
+import androidx.recyclerview.widget.LinearLayoutManager; // <-- AÑADIR
+import androidx.recyclerview.widget.RecyclerView; // <-- AÑADIR
+import com.hirelance.modelo.Habilidad; // <-- AÑADIR
+import java.util.ArrayList; // <-- AÑADIR
+import java.util.List; // <-- AÑADIR
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -39,10 +45,8 @@ import retrofit2.Call; // <--- 5. Importa Call, Callback y Response
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditarPerfilActivity extends AppCompatActivity {
-
-    // --- ¡YA NO USAMOS ESTA CONSTANTE! ---
-    // public static final String PERFIL_EXTRA = "perfil_estudiante_data";
+// --- 1. IMPLEMENTA LA INTERFAZ DEL ADAPTADOR ---
+public class EditarPerfilActivity extends AppCompatActivity implements HabilidadEditableAdapter.OnHabilidadListener {
 
     // Vistas
     private MaterialToolbar toolbar;
@@ -51,6 +55,15 @@ public class EditarPerfilActivity extends AppCompatActivity {
     private MaterialButton btnCambiarFoto, btnGuardarCambios;
     private TextInputEditText etCarrera, etAnioCarrera, etPortafolio, etDescripcion;
     private TextInputEditText etCorreo, etContrasena; // <-- Nuevos campos
+
+    // --- 2. AÑADE LAS NUEVAS VISTAS DE HABILIDADES ---
+    private RecyclerView recyclerHabilidadesEdit;
+    private TextInputEditText etNuevaHabilidad;
+    private MaterialButton btnAnadirHabilidad;
+
+    // --- 3. ADAPTADOR Y LISTA PARA HABILIDADES ---
+    private HabilidadEditableAdapter habilidadAdapter;
+    private List<Habilidad> listaHabilidades = new ArrayList<>();
 
     // Datos
     private PerfilEstudiante perfilActual; // Esto se llenará con la API
@@ -92,12 +105,15 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
         configurarGalleryLauncher(); // <-- 4. Configura el launcher
 
-        // 4. ¡NUEVO! Cargar datos desde la API
-        cargarDatosDelPerfil();
+        // --- 4. CONFIGURA EL NUEVO RECYCLERVIEW ---
+        configurarRecyclerHabilidades();
 
-        // 4. Configurar listeners
+        cargarDatosDelPerfil(); // Esto llamará a pintarDatos()
+
+        // --- 5. LISTENERS DE BOTONES (Añadir el de Habilidad) ---
         btnGuardarCambios.setOnClickListener(v -> guardarCambios());
-        btnCambiarFoto.setOnClickListener(v -> abrirGaleria()); // <-- 6. Listener para la foto
+        btnCambiarFoto.setOnClickListener(v -> abrirGaleria());
+        btnAnadirHabilidad.setOnClickListener(v -> anadirHabilidad());
     }
 
     // --- 6. ¡NUEVO MÉTODO PARA CARGAR DATOS! ---
@@ -145,6 +161,11 @@ public class EditarPerfilActivity extends AppCompatActivity {
         // Vistas de Cuenta
         etCorreo = findViewById(R.id.etCorreo);
         etContrasena = findViewById(R.id.etContrasena);
+
+        // --- 6. VINCULA LAS NUEVAS VISTAS ---
+        recyclerHabilidadesEdit = findViewById(R.id.recyclerHabilidadesEdit);
+        etNuevaHabilidad = findViewById(R.id.etNuevaHabilidad);
+        btnAnadirHabilidad = findViewById(R.id.btnAnadirHabilidad);
     }
 
     private void configurarToolbar() {
@@ -158,8 +179,14 @@ public class EditarPerfilActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
     }
 
-    // --- 7. MÉTODO 'recibirDatos()' AHORA SE LLAMA 'pintarDatos()' ---
-    // (Ya no recibe un parámetro, usa la variable de clase 'perfilActual')
+    // --- 7. AÑADE ESTE MÉTODO ---
+    private void configurarRecyclerHabilidades() {
+        // 'this' funciona porque la Activity ahora implementa OnHabilidadListener
+        habilidadAdapter = new HabilidadEditableAdapter(listaHabilidades, this, this);
+        recyclerHabilidadesEdit.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerHabilidadesEdit.setAdapter(habilidadAdapter);
+    }
+
     private void pintarDatos() {
         if (perfilActual == null) return; // Seguridad
 
@@ -185,7 +212,52 @@ public class EditarPerfilActivity extends AppCompatActivity {
         if (perfilActual.getUsuario() != null) {
             etCorreo.setText(perfilActual.getUsuario().getCorreo());
         }
+
+        // --- 8. PINTAR LA LISTA DE HABILIDADES ---
+        if (perfilActual.getHabilidades() != null) {
+            listaHabilidades.clear();
+            listaHabilidades.addAll(perfilActual.getHabilidades());
+            habilidadAdapter.notifyDataSetChanged();
+        }
     }
+
+    // --- 9. AÑADE LA LÓGICA PARA LOS BOTONES DE HABILIDAD ---
+
+    /**
+     * Se llama cuando el usuario presiona el botón '+'
+     */
+    private void anadirHabilidad() {
+        String tituloHabilidad = etNuevaHabilidad.getText().toString().trim();
+        if (tituloHabilidad.isEmpty()) {
+            Toast.makeText(this, "Escribe una habilidad", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Creamos un objeto Habilidad temporal
+        Habilidad nuevaHabilidad = new Habilidad();
+        nuevaHabilidad.setTitulo(tituloHabilidad);
+
+        // Lo añadimos a la lista local y notificamos al adaptador
+        listaHabilidades.add(nuevaHabilidad);
+        habilidadAdapter.notifyItemInserted(listaHabilidades.size() - 1);
+
+        // Limpiamos el campo de texto
+        etNuevaHabilidad.setText("");
+    }
+
+    /**
+     * Este es el metodo de la interfaz OnHabilidadListener.
+     * Se llama cuando el usuario presiona la 'X' en un chip.
+     */
+    @Override
+    public void onHabilidadEliminarClick(int position) {
+        // Eliminamos la habilidad de la lista local
+        listaHabilidades.remove(position);
+        // Notificamos al adaptador
+        habilidadAdapter.notifyItemRemoved(position);
+        habilidadAdapter.notifyItemRangeChanged(position, listaHabilidades.size());
+    }
+
 
     /**
      * Valida los campos y envía la actualización a la API.
@@ -204,7 +276,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
         int anioCarrera = 0;
         try { anioCarrera = Integer.parseInt(anioStr); } catch (NumberFormatException e) { /* ... */ }
 
-        // 10. Actualizar el objeto perfilActual
+        // Actualizar el objeto perfilActual
         perfilActual.setCarrera(carrera);
         perfilActual.setAnioCarrera(anioCarrera);
         perfilActual.setPortafolioUrl(portafolio);
@@ -218,18 +290,17 @@ public class EditarPerfilActivity extends AppCompatActivity {
             perfilActual.setUsuario(new Usuario());
         }
         perfilActual.getUsuario().setCorreo(correo);
-
         if (!contrasena.isEmpty()) {
             perfilActual.getUsuario().setContrasena(contrasena);
         } else {
             perfilActual.getUsuario().setContrasena(null);
         }
-
-        // --- ¡AÑADE ESTO! ---
-        // El script 'actualizarMiPerfil.php' necesita el ID de usuario.
-        // Como 'perfilActual' fue cargado por la API, ya debería tenerlo.
-        // Pero lo re-seteamos desde el 'idUsuarioActual' para estar 100% seguros.
         perfilActual.setIdUsuario(idUsuarioActual);
+
+        // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
+        // Actualizamos la lista de habilidades en el objeto 'perfilActual'
+        // antes de enviarlo a la API.
+        perfilActual.setHabilidades(this.listaHabilidades);
 
         // 11. Llamar a la API
         mostrarCarga(true);

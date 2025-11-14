@@ -59,6 +59,22 @@
             android:name=".controlador.DetallePostulacionActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".controlador.ContratistaDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.VerPostulacionesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.DetallePostulanteActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.PublicarProyectoActivity"
+            android:exported="false" />
+
 
     </application>
 

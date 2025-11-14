@@ -34,6 +34,12 @@ public class Proyecto {
     @SerializedName("estado")
     private String estado; // El ENUM de SQL se maneja como String
 
+    @SerializedName("id_contratista")
+    private int idContratista;
+
+    @SerializedName("id_categoria")
+    private int idCategoria;
+
     // --- Objetos Anidados ---
     // En lugar de solo tener 'id_contratista' e 'id_categoria',
     // es una BUENA PRÁCTICA que la API nos envíe los objetos completos.
@@ -130,5 +136,13 @@ public class Proyecto {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public void setIdContratista(int idContratista) {
+        this.idContratista = idContratista;
+    }
+
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
     }
 }
