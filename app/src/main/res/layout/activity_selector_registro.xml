@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hl_fondo_principal"
+    tools:context=".controlador.SelectorRegistroActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarSelector"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/hl_fondo_tarjeta"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Selecciona tu Cuenta"
+            app:titleTextColor="@color/hl_texto_principal" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/textTituloSelector"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:gravity="center"
+        android:text="¿Cómo quieres unirte a Hirelance?"
+        android:textColor="@color/hl_texto_principal"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSoyEstudiante"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="32dp"
+        android:paddingVertical="14dp"
+        android:text="Soy Estudiante"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:backgroundTint="@color/hl_acento_naranja"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTituloSelector" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSoyContratista"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="14dp"
+        android:text="Soy Contratista"
+        android:textAllCaps="false"
+        android:textColor="@color/hl_acento_naranja"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSoyEstudiante"
+        app:strokeColor="@color/hl_acento_naranja" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

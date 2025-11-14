@@ -91,16 +91,15 @@ public class LoginActivity extends AppCompatActivity {
     private void configurarListeners() {
         // Click en el botón de "Iniciar Sesión"
         botonLogin.setOnClickListener(v -> {
-            // v es la "vista" (el botón) que fue clickeada
             intentarLogin();
         });
 
         // Click en el texto "Regístrate aquí"
         textIrARegistro.setOnClickListener(v -> {
-            // Creamos una intención (Intent) para abrir la pantalla de Registro
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
+            // Ya no abre RegisterActivity directamente
+            Intent intent = new Intent(LoginActivity.this, SelectorRegistroActivity.class);
             startActivity(intent);
-            // (RegisterActivity.java la crearemos en la siguiente parte)
         });
     }
 

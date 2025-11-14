@@ -7,6 +7,7 @@ import com.hirelance.modelo.LoginResponse;
 import com.hirelance.modelo.PerfilContratista;
 import com.hirelance.modelo.Postulacion; // <-- Importado
 import com.hirelance.modelo.Proyecto;
+import com.hirelance.modelo.RegisterContratistaDTO;
 import com.hirelance.modelo.Universidad;
 import com.hirelance.modelo.Usuario;
 import com.hirelance.modelo.PerfilEstudiante; // <-- ¡NUEVO IMPORT!
@@ -241,6 +242,14 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body PerfilContratista perfil
     );
+
+    // --- ¡AÑADE ESTE NUEVO ENDPOINT! ---
+    /**
+     * Petición para registrar un nuevo CONTRATISTA.
+     * Envía el DTO completo como un cuerpo JSON.
+     */
+    @POST("registerContratista.php")
+    Call<Usuario> registerContratista(@Body RegisterContratistaDTO dto);
 
 
 

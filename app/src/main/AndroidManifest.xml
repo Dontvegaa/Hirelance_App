@@ -83,6 +83,14 @@
             android:name=".controlador.EditarPerfilContratistaActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".controlador.RegisterContratistaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".controlador.SelectorRegistroActivity"
+            android:exported="false" />
+
 
     </application>
 
